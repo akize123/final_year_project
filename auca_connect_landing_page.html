@@ -1,0 +1,422 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans,'Inter',sans-serif);color:#111;background:#fff;overflow-x:hidden}
+:root{--navy:#1B3A6B;--navy2:#2a5298;--navy3:#0f2444;--gold:#C9A227;--light:#EEF3FB;--border:#dce6f5}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.97);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1160px;margin:0 auto;padding:0 2rem;display:flex;align-items:center;justify-content:space-between;height:70px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.crest{width:44px;height:44px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.crest svg{width:24px;height:24px;fill:none;stroke:#fff;stroke-width:1.8}
+.brand{line-height:1.2}
+.brand-name{font-size:16px;font-weight:600;color:var(--navy);display:block}
+.brand-sub{font-size:11px;color:#6b7a99;display:block;letter-spacing:0.05em}
+.nav-links{display:flex;gap:2.2rem;list-style:none}
+.nav-links a{font-size:13.5px;color:#374151;text-decoration:none;font-weight:500;letter-spacing:0.01em;transition:color 0.2s}
+.nav-links a:hover{color:var(--navy)}
+.nav-actions{display:flex;gap:10px;align-items:center}
+.btn-ghost{padding:8px 20px;border:1.5px solid var(--border);border-radius:7px;font-size:13.5px;color:var(--navy);background:transparent;cursor:pointer;font-weight:500;transition:background 0.2s}
+.btn-ghost:hover{background:var(--light)}
+.btn-navy{padding:9px 22px;border-radius:7px;font-size:13.5px;color:#fff;background:var(--navy);border:none;cursor:pointer;font-weight:500;display:inline-flex;align-items:center;gap:6px;transition:background 0.2s}
+.btn-navy:hover{background:var(--navy2)}
+
+/* HERO */
+.hero{position:relative;min-height:94vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:var(--navy3)}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0a1e3d 0%,#1B3A6B 50%,#0d2b55 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:48px 48px}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(42,82,152,0.5) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:2;text-align:center;padding:5rem 2rem 4rem;max-width:860px;animation:fadeUp 0.8s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.18);color:rgba(255,255,255,0.85);font-size:11.5px;letter-spacing:0.09em;padding:6px 18px;border-radius:100px;margin-bottom:2.2rem;text-transform:uppercase}
+.badge-dot{width:6px;height:6px;border-radius:50%;background:#60a5fa;display:inline-block;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+.hero-title{font-size:clamp(34px,5.5vw,68px);font-weight:700;color:#fff;line-height:1.1;letter-spacing:-0.025em;margin-bottom:1.6rem}
+.hero-title .accent{color:#60a5fa}
+.hero-sub{font-size:17px;color:rgba(255,255,255,0.72);line-height:1.75;max-width:600px;margin:0 auto 2.8rem}
+.hero-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-primary{padding:13px 32px;border-radius:8px;font-size:15px;color:#fff;background:#2563eb;border:none;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px;transition:background 0.2s}
+.btn-primary:hover{background:#1d4ed8}
+.btn-outline{padding:12px 30px;border-radius:8px;font-size:15px;color:#fff;background:transparent;border:2px solid rgba(255,255,255,0.3);cursor:pointer;font-weight:500;transition:border-color 0.2s,background 0.2s}
+.btn-outline:hover{border-color:rgba(255,255,255,0.6);background:rgba(255,255,255,0.07)}
+.hero-pills{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.pill{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);padding:7px 16px;border-radius:100px;font-size:12.5px;color:rgba(255,255,255,0.8)}
+.pill svg{width:14px;height:14px;stroke:#60a5fa;flex-shrink:0}
+.hero-scroll{position:absolute;bottom:2.5rem;left:50%;transform:translateX(-50%);z-index:2;text-align:center;color:rgba(255,255,255,0.4);font-size:11px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.scroll-line{width:1px;height:36px;background:linear-gradient(to bottom,rgba(255,255,255,0.3),transparent)}
+
+/* STATS */
+.stats{background:#fff;border-bottom:1px solid var(--border)}
+.stats-inner{max-width:1160px;margin:0 auto;padding:3rem 2rem;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.stat{text-align:center;padding:0 1rem;position:relative}
+.stat+.stat::before{content:'';position:absolute;left:0;top:15%;height:70%;width:1px;background:var(--border)}
+.stat-num{font-size:36px;font-weight:700;color:var(--navy);display:block;line-height:1.1}
+.stat-label{font-size:13px;color:#6b7a99;margin-top:6px;display:block}
+
+/* FEATURES */
+.section{padding:6rem 2rem}
+.section-inner{max-width:1160px;margin:0 auto}
+.section-tag{display:inline-block;background:var(--light);color:var(--navy);font-size:11.5px;font-weight:600;letter-spacing:0.08em;padding:5px 14px;border-radius:100px;margin-bottom:1.2rem;text-transform:uppercase}
+.section-title{font-size:clamp(26px,3.5vw,40px);font-weight:700;color:#0f172a;line-height:1.2;margin-bottom:1rem}
+.section-sub{font-size:16px;color:#64748b;line-height:1.7;max-width:540px}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5px;background:var(--border);border:1px solid var(--border);margin-top:3.5rem}
+.feat-card{background:#fff;padding:2.5rem 2rem;display:flex;flex-direction:column;transition:background 0.2s}
+.feat-card:hover{background:var(--light)}
+.feat-icon{width:52px;height:52px;border-radius:12px;background:var(--light);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;flex-shrink:0}
+.feat-icon svg{width:24px;height:24px;stroke:var(--navy);fill:none;stroke-width:1.8}
+.feat-title{font-size:16px;font-weight:600;color:#0f172a;margin-bottom:0.6rem}
+.feat-desc{font-size:14px;color:#64748b;line-height:1.65}
+
+/* HOW IT WORKS */
+.how{background:var(--light);padding:6rem 2rem}
+.how-inner{max-width:1160px;margin:0 auto}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;margin-top:3.5rem;position:relative}
+.steps::before{content:'';position:absolute;top:40px;left:calc(16.6% + 24px);right:calc(16.6% + 24px);height:2px;background:var(--border);z-index:0}
+.step{text-align:center;position:relative;z-index:1}
+.step-num{width:52px;height:52px;border-radius:50%;background:var(--navy);color:#fff;font-size:18px;font-weight:700;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem}
+.step-title{font-size:16px;font-weight:600;color:#0f172a;margin-bottom:0.5rem}
+.step-desc{font-size:14px;color:#64748b;line-height:1.65}
+
+/* PUBLICATIONS */
+.pubs{padding:6rem 2rem}
+.pubs-inner{max-width:1160px;margin:0 auto}
+.pubs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem}
+.pub-card{border:1px solid var(--border);border-radius:10px;padding:1.5rem;background:#fff;transition:border-color 0.2s}
+.pub-card:hover{border-color:#93b4e0}
+.pub-dept{font-size:11px;font-weight:600;letter-spacing:0.07em;color:#2563eb;text-transform:uppercase;margin-bottom:0.7rem}
+.pub-title{font-size:15px;font-weight:600;color:#0f172a;line-height:1.45;margin-bottom:0.7rem}
+.pub-author{font-size:12.5px;color:#64748b}
+.pub-year{font-size:12px;color:#94a3b8;margin-top:0.5rem}
+.pub-tag{display:inline-block;background:var(--light);color:var(--navy);font-size:11px;padding:3px 10px;border-radius:100px;margin-top:0.8rem}
+
+/* CTA BANNER */
+.cta-banner{background:var(--navy);padding:5rem 2rem;text-align:center}
+.cta-title{font-size:clamp(26px,3.5vw,40px);font-weight:700;color:#fff;margin-bottom:1rem}
+.cta-sub{font-size:16px;color:rgba(255,255,255,0.72);margin-bottom:2.5rem}
+.cta-actions{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-white{padding:13px 32px;border-radius:8px;font-size:15px;color:var(--navy);background:#fff;border:none;cursor:pointer;font-weight:600;display:inline-flex;align-items:center;gap:8px}
+.btn-white:hover{background:#f0f5ff}
+
+/* FOOTER */
+.footer{background:#060f20;padding:4rem 2rem 2rem;color:rgba(255,255,255,0.7)}
+.footer-inner{max-width:1160px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;padding-bottom:3rem;border-bottom:1px solid rgba(255,255,255,0.08)}
+.footer-brand-name{font-size:17px;font-weight:600;color:#fff;margin-bottom:0.5rem}
+.footer-brand-tag{font-size:13px;color:rgba(255,255,255,0.5);line-height:1.6;margin-bottom:1rem}
+.footer-col-title{font-size:13px;font-weight:600;color:#fff;margin-bottom:1rem;letter-spacing:0.04em;text-transform:uppercase}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:8px}
+.footer-links a{font-size:13.5px;color:rgba(255,255,255,0.55);text-decoration:none;transition:color 0.2s}
+.footer-links a:hover{color:#fff}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:2rem;font-size:12.5px;color:rgba(255,255,255,0.35)}
+.footer-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
+.footer-crest{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center}
+
+svg.icon{display:inline-block;vertical-align:middle}
+</style>
+
+<h2 class="sr-only">AUCA Connect Publication Hub — University research and publication landing page</h2>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="logo">
+      <div class="crest">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg>
+      </div>
+      <div class="brand">
+        <span class="brand-name">AUCA Connect</span>
+        <span class="brand-sub">Publication Hub</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#">Solutions</a></li>
+      <li><a href="#">Research</a></li>
+      <li><a href="#">Publications</a></li>
+      <li><a href="#">Departments</a></li>
+      <li><a href="#">About</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-ghost">Sign In</button>
+      <button class="btn-navy">
+        <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Get Started
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Adventist University of Central Africa · Rwanda
+    </div>
+    <h1 class="hero-title">
+      Preserving Knowledge.<br><span class="accent">Enabling Discovery.</span>
+    </h1>
+    <p class="hero-sub">
+      The official platform for AUCA lecturers and researchers to publish, manage, and share academic work — building a lasting institutional knowledge base.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+        Get Started Free
+      </button>
+      <button class="btn-outline">Browse Publications</button>
+    </div>
+    <div class="hero-pills">
+      <span class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        Research Publishing
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 9h6M9 13h4"/></svg>
+        Theses & Projects
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        Institutional Archive
+      </span>
+      <span class="pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        Peer Collaboration
+      </span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stats-inner">
+    <div class="stat">
+      <span class="stat-num">1,240+</span>
+      <span class="stat-label">Publications indexed</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">340+</span>
+      <span class="stat-label">Active researchers</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">48</span>
+      <span class="stat-label">Academic departments</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">12</span>
+      <span class="stat-label">Years of excellence</span>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section">
+  <div class="section-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:2rem">
+      <div>
+        <span class="section-tag">Why AUCA Connect</span>
+        <h2 class="section-title">Everything you need to<br>manage academic research</h2>
+      </div>
+      <p class="section-sub" style="padding-top:2.2rem;margin:0">One unified platform for submitting, reviewing, publishing, and discovering scholarly work across AUCA's academic community.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        </div>
+        <div class="feat-title">Structured Publishing</div>
+        <div class="feat-desc">Submit research papers, theses, dissertations, and institutional project reports with guided metadata and formatting.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <div class="feat-title">Peer Discovery</div>
+        <div class="feat-desc">Browse, search, and filter publications across all AUCA departments and disciplines with advanced academic search tools.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div class="feat-title">Impact Analytics</div>
+        <div class="feat-desc">Track how your publications perform — views, citations, and downloads — with real-time researcher dashboards.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+        </div>
+        <div class="feat-title">Review Workflow</div>
+        <div class="feat-desc">Built-in peer review tools — assign reviewers, track revisions, and manage editorial decisions in one place.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="feat-title">Institutional Archive</div>
+        <div class="feat-desc">A permanent, searchable digital repository preserving AUCA's academic output for generations of students and scholars.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="feat-title">Collaboration Tools</div>
+        <div class="feat-desc">Co-author papers, invite collaborators, and build cross-departmental research teams within the platform.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how">
+  <div class="how-inner">
+    <div style="text-align:center">
+      <span class="section-tag">Simple process</span>
+      <h2 class="section-title" style="margin:0.8rem auto 0;max-width:480px">From research to publication in three steps</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Create your account</div>
+        <div class="step-desc">Sign up with your AUCA campus email and set up your researcher profile in minutes.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Submit your research</div>
+        <div class="step-desc">Upload your paper or thesis, add metadata, and submit it through our structured review pipeline.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Get published & cited</div>
+        <div class="step-desc">Your work goes live in the AUCA institutional archive, indexed and discoverable by the academic community.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RECENT PUBLICATIONS -->
+<section class="pubs">
+  <div class="pubs-inner">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;flex-wrap:wrap;gap:1rem">
+      <div>
+        <span class="section-tag">Recent work</span>
+        <h2 class="section-title" style="margin-top:0.6rem;margin-bottom:0">Latest publications</h2>
+      </div>
+      <button class="btn-navy" style="align-self:flex-end;margin-bottom:0.2rem">Browse all →</button>
+    </div>
+    <div class="pubs-grid">
+      <div class="pub-card">
+        <div class="pub-dept">Computer Science</div>
+        <div class="pub-title">Machine Learning Applications in Agricultural Yield Prediction in Rwanda</div>
+        <div class="pub-author">Dr. Jean-Paul Nkurunziza</div>
+        <div class="pub-year">2024 · Journal Article</div>
+        <span class="pub-tag">Peer Reviewed</span>
+      </div>
+      <div class="pub-card">
+        <div class="pub-dept">Public Health</div>
+        <div class="pub-title">Community Health Worker Effectiveness in Rural Kigali Districts: A Longitudinal Study</div>
+        <div class="pub-author">Prof. Marie Claire Uwimana</div>
+        <div class="pub-year">2024 · Research Paper</div>
+        <span class="pub-tag">Open Access</span>
+      </div>
+      <div class="pub-card">
+        <div class="pub-dept">Business Administration</div>
+        <div class="pub-title">Digital Financial Inclusion and SME Growth in Post-Genocide Rwanda</div>
+        <div class="pub-author">Dr. Emmanuel Habimana</div>
+        <div class="pub-year">2023 · Thesis</div>
+        <span class="pub-tag">Award Winner</span>
+      </div>
+      <div class="pub-card">
+        <div class="pub-dept">Education</div>
+        <div class="pub-title">Blended Learning Outcomes in Rwandan Higher Education Institutions</div>
+        <div class="pub-author">Dr. Solange Ingabire</div>
+        <div class="pub-year">2023 · Journal Article</div>
+        <span class="pub-tag">Peer Reviewed</span>
+      </div>
+      <div class="pub-card">
+        <div class="pub-dept">Engineering</div>
+        <div class="pub-title">Solar Energy Adoption Barriers in Rural Electrification: East Africa Case Study</div>
+        <div class="pub-author">Prof. Denis Rutayisire</div>
+        <div class="pub-year">2024 · Conference Paper</div>
+        <span class="pub-tag">Open Access</span>
+      </div>
+      <div class="pub-card">
+        <div class="pub-dept">Theology</div>
+        <div class="pub-title">Adventist Ethics and Environmental Stewardship in Sub-Saharan Africa</div>
+        <div class="pub-author">Dr. Esperance Mukamana</div>
+        <div class="pub-year">2023 · Book Chapter</div>
+        <span class="pub-tag">Institutional</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<section class="cta-banner">
+  <div style="max-width:640px;margin:0 auto">
+    <h2 class="cta-title">Ready to share your research<br>with the world?</h2>
+    <p class="cta-sub">Join 340+ AUCA researchers already publishing on the platform. Your knowledge deserves to be discovered.</p>
+    <div class="cta-actions">
+      <button class="btn-white">
+        <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12h14"/></svg>
+        Get Started Free
+      </button>
+      <button class="btn-outline" style="border-color:rgba(255,255,255,0.35)">Contact Us</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-logo-row">
+          <div class="footer-crest">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3" stroke-linecap="round"/></svg>
+          </div>
+          <div class="footer-brand-name">AUCA Connect</div>
+        </div>
+        <div class="footer-brand-tag">Adventist University of Central Africa<br>Publication Hub — Kigali, Rwanda<br><br>"Preserving Knowledge. Enabling Discovery."</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Platform</div>
+        <ul class="footer-links">
+          <li><a href="#">Browse Publications</a></li>
+          <li><a href="#">Submit Research</a></li>
+          <li><a href="#">Thesis Repository</a></li>
+          <li><a href="#">Open Access</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Institution</div>
+        <ul class="footer-links">
+          <li><a href="#">About AUCA</a></li>
+          <li><a href="#">Departments</a></li>
+          <li><a href="#">Faculty Directory</a></li>
+          <li><a href="#">News & Events</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Support</div>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Submission Guide</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Adventist University of Central Africa. All rights reserved.</span>
+      <span>Built for AUCA researchers</span>
+    </div>
+  </div>
+</footer>
