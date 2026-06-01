@@ -93,7 +93,7 @@ export default function LandingPage() {
                   <span className="inline-block h-1 w-10 bg-blue-900 rounded-full"></span>
                   <span className="text-xs font-semibold tracking-widest text-blue-900 uppercase">Research Archive</span>
                 </div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-blue-900 mb-6 leading-tight">
+                <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-blue-900 mb-6 leading-tight">
                   Preserve and Share AUCA&apos;s Scholarly Legacy
                 </h1>
                 <p className="text-base text-blue-800 mb-8 leading-relaxed max-w-lg">
@@ -143,7 +143,7 @@ export default function LandingPage() {
         <section id="statistics" className="bg-blue-900 text-white px-4 py-12 sm:py-16 lg:py-20 lg:px-8">
           <div className="mx-auto max-w-6xl">
             <div className="mb-12 text-center">
-              <h2 className="text-2xl sm:text-3xl font-bold mb-3">AUCA Research at a Glance</h2>
+              <h2 className="text-3xl sm:text-4xl font-bold mb-3">AUCA Research at a Glance</h2>
               <p className="text-base text-blue-100">Supporting academic excellence and institutional growth</p>
             </div>
             
