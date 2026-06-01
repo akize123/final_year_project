@@ -11,7 +11,6 @@ const centerNav = [
   { label: "Research", href: "#statistics" },
   { label: "Publications", href: "#publications" },
   { label: "About", href: "#about" },
-  { label: "Contact", href: "mailto:support@auca.ac.rw" },
 ];
 
 export default function LandingPage() {
@@ -43,14 +42,6 @@ export default function LandingPage() {
 
           <div className="flex items-center gap-3">
             <Button
-              variant="ghost"
-              size="sm"
-              className="hidden sm:inline-flex text-blue-900 hover:text-amber-600 hover:bg-blue-50"
-              asChild
-            >
-              <Link to="/login">Sign in</Link>
-            </Button>
-            <Button
               size="sm"
               className="hidden sm:inline-flex bg-blue-900 hover:bg-blue-800 text-white"
               asChild
@@ -75,9 +66,6 @@ export default function LandingPage() {
                     </a>
                   ))}
                   <div className="mt-6 flex flex-col gap-2 border-t border-blue-100 pt-4">
-                    <Button variant="outline" className="border-blue-200 text-blue-900 hover:bg-blue-50" asChild>
-                      <Link to="/login">Sign in</Link>
-                    </Button>
                     <Button className="bg-blue-900 hover:bg-blue-800" asChild>
                       <Link to="/login">Get started</Link>
                     </Button>
@@ -91,25 +79,25 @@ export default function LandingPage() {
 
       <main>
         {/* Hero Section */}
-        <section className="relative overflow-hidden px-4 py-0 lg:px-8">
+        <section className="relative overflow-hidden px-4 py-8 lg:px-8">
           <div className="mx-auto max-w-7xl">
-            <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[600px]">
+            <div className="grid lg:grid-cols-2 gap-16 items-stretch min-h-[650px]">
               {/* Left Content */}
               <motion.div
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="flex flex-col justify-center py-16 lg:py-0"
+                className="flex flex-col justify-center py-12 lg:py-0"
               >
-                <div className="mb-2 flex items-center gap-2">
-                  <span className="inline-block h-1 w-8 bg-amber-500 rounded-full"></span>
-                  <span className="text-xs font-semibold tracking-widest text-blue-900 uppercase">Institutional Research Portal</span>
+                <div className="mb-4 flex items-center gap-3">
+                  <span className="inline-block h-1 w-10 bg-blue-900 rounded-full"></span>
+                  <span className="text-xs font-semibold tracking-widest text-blue-900 uppercase">Research Archive</span>
                 </div>
-                <h1 className="text-4xl sm:text-5xl lg:text-5xl font-bold tracking-tight text-blue-900 mb-6 leading-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-blue-900 mb-6 leading-tight">
                   Preserve and Share AUCA&apos;s Scholarly Legacy
                 </h1>
-                <p className="text-lg text-blue-800 mb-8 leading-relaxed max-w-xl">
-                  A comprehensive institutional repository for AUCA research, theses, publications, and academic work. Secure, discoverable, and built for long-term preservation.
+                <p className="text-base text-blue-800 mb-8 leading-relaxed max-w-lg">
+                  A comprehensive institutional repository for AUCA research, theses, and publications. Secure, discoverable, and built for long-term preservation of academic excellence.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <Button
@@ -125,13 +113,13 @@ export default function LandingPage() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-amber-500 text-blue-900 hover:bg-amber-50 rounded-md"
+                    className="border-blue-300 text-blue-900 hover:bg-blue-50 rounded-md"
                     asChild
                   >
                     <Link to="/browse">Browse Archive</Link>
                   </Button>
                 </div>
-                <p className="text-sm text-blue-700 mt-6">Campus sign-in required • Free for AUCA members</p>
+                <p className="text-xs text-blue-700 mt-8 font-medium">Campus sign-in required • Free for AUCA members</p>
               </motion.div>
 
               {/* Right Image */}
@@ -141,27 +129,25 @@ export default function LandingPage() {
                 transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
                 className="hidden lg:block relative"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-100/30 to-amber-100/20 rounded-2xl blur-3xl" />
                 <img
                   src="/images/auca1.jpg"
                   alt="AUCA Campus"
-                  className="relative rounded-2xl shadow-2xl object-cover h-full w-full"
+                  className="rounded-xl shadow-xl object-cover h-full w-full"
                 />
-                <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-white/20" />
               </motion.div>
             </div>
           </div>
         </section>
 
         {/* Research Statistics Section */}
-        <section id="statistics" className="bg-blue-900 text-white px-4 py-16 sm:py-24 lg:py-32 lg:px-8">
+        <section id="statistics" className="bg-blue-900 text-white px-4 py-12 sm:py-16 lg:py-20 lg:px-8">
           <div className="mx-auto max-w-6xl">
-            <div className="mb-16 text-center">
-              <h2 className="text-3xl sm:text-4xl font-bold mb-4">AUCA Research at a Glance</h2>
-              <p className="text-lg text-blue-100">Supporting academic excellence and institutional growth</p>
+            <div className="mb-12 text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold mb-3">AUCA Research at a Glance</h2>
+              <p className="text-base text-blue-100">Supporting academic excellence and institutional growth</p>
             </div>
             
-            <div className="grid md:grid-cols-4 gap-8">
+            <div className="grid md:grid-cols-4 gap-6">
               {[
                 { number: "2,847", label: "Academic Works", icon: BookOpen },
                 { number: "1,250+", label: "Active Researchers", icon: Users },
@@ -176,9 +162,9 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   className="text-center"
                 >
-                  <stat.icon className="h-8 w-8 text-amber-400 mx-auto mb-4" />
-                  <div className="text-4xl font-bold text-amber-300 mb-2">{stat.number}</div>
-                  <p className="text-blue-100 font-medium">{stat.label}</p>
+                  <stat.icon className="h-6 w-6 text-white mx-auto mb-3" />
+                  <div className="text-3xl font-bold text-white mb-1">{stat.number}</div>
+                  <p className="text-sm text-blue-100 font-medium">{stat.label}</p>
                 </motion.div>
               ))}
             </div>
@@ -186,11 +172,11 @@ export default function LandingPage() {
         </section>
 
         {/* Features Section */}
-        <section id="features" className="border-t border-blue-100 px-4 py-16 sm:py-24 lg:py-32 lg:px-8 bg-blue-50">
+        <section id="features" className="border-t border-blue-100 px-4 py-16 sm:py-24 lg:py-32 lg:px-8 bg-white">
           <div className="mx-auto max-w-6xl">
             <div className="mb-16 text-center">
-              <h2 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-4">Built for Institutional Excellence</h2>
-              <p className="text-lg text-blue-800">Comprehensive tools for research management and discovery</p>
+              <h2 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-3">Built for Institutional Excellence</h2>
+              <p className="text-base text-blue-800">Complete research management and discovery platform</p>
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -198,7 +184,7 @@ export default function LandingPage() {
                 {
                   icon: FileText,
                   title: "Submit Work",
-                  description: "Upload and manage theses, projects, and publications with rich metadata."
+                  description: "Upload and manage theses, projects, and publications with comprehensive metadata."
                 },
                 {
                   icon: CheckCircle2,
@@ -208,12 +194,12 @@ export default function LandingPage() {
                 {
                   icon: TrendingUp,
                   title: "Analytics",
-                  description: "Track research impact and institutional metrics over time."
+                  description: "Track research impact and institutional metrics in real time."
                 },
                 {
                   icon: BookOpen,
                   title: "Discovery",
-                  description: "Powerful search and browse capabilities across the full archive."
+                  description: "Powerful search and browse across your entire research archive."
                 }
               ].map((feature, i) => (
                 <motion.div
@@ -222,13 +208,13 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   viewport={{ once: true }}
-                  className="rounded-lg border border-blue-200 bg-white p-6 hover:border-amber-400 hover:shadow-lg transition-all group"
+                  className="rounded-lg border border-blue-200 bg-blue-50 p-6 hover:border-blue-400 hover:shadow-md transition-all group"
                 >
-                  <div className="h-10 w-10 rounded-lg bg-blue-50 flex items-center justify-center mb-4 group-hover:bg-amber-50 transition-colors">
-                    <feature.icon className="h-6 w-6 text-blue-900 group-hover:text-amber-600 transition-colors" />
+                  <div className="h-12 w-12 rounded-lg bg-blue-900 flex items-center justify-center mb-4 group-hover:bg-blue-800 transition-colors">
+                    <feature.icon className="h-6 w-6 text-white" />
                   </div>
-                  <h3 className="font-semibold text-blue-900 mb-2">{feature.title}</h3>
-                  <p className="text-sm text-blue-700">{feature.description}</p>
+                  <h3 className="font-semibold text-blue-900 mb-2 text-lg">{feature.title}</h3>
+                  <p className="text-sm text-blue-700 leading-relaxed">{feature.description}</p>
                 </motion.div>
               ))}
             </div>
@@ -236,11 +222,11 @@ export default function LandingPage() {
         </section>
 
         {/* Latest Publications Section */}
-        <section id="publications" className="px-4 py-16 sm:py-24 lg:py-32 lg:px-8 bg-white">
+        <section id="publications" className="px-4 py-16 sm:py-24 lg:py-32 lg:px-8 bg-blue-50">
           <div className="mx-auto max-w-6xl">
-            <div className="mb-16">
-              <h2 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-4">Latest Publications</h2>
-              <p className="text-lg text-blue-800">Recent scholarly contributions from our community</p>
+            <div className="mb-16 text-center">
+              <h2 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-3">Latest Publications</h2>
+              <p className="text-base text-blue-800">Recent scholarly contributions from our community</p>
             </div>
             
             <div className="grid md:grid-cols-3 gap-8">
@@ -273,18 +259,18 @@ export default function LandingPage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, delay: i * 0.1 }}
                   viewport={{ once: true }}
-                  className="group border border-blue-100 rounded-lg p-6 hover:border-amber-400 hover:shadow-lg hover:bg-blue-50/30 transition-all"
+                  className="border border-blue-200 rounded-lg p-6 hover:border-blue-400 hover:shadow-md transition-all bg-white"
                 >
                   <div className="flex items-start justify-between mb-4">
-                    <span className="inline-block px-3 py-1 text-xs font-semibold text-amber-700 bg-amber-100 rounded-full">
+                    <span className="inline-block px-3 py-1 text-xs font-semibold text-blue-700 bg-blue-100 rounded-full">
                       {pub.category}
                     </span>
-                    <span className="text-sm text-blue-600 font-medium">{pub.reads} reads</span>
+                    <span className="text-xs text-blue-600 font-medium">{pub.reads} reads</span>
                   </div>
-                  <h3 className="font-semibold text-blue-900 mb-2 text-lg group-hover:text-amber-600 transition-colors cursor-pointer">
+                  <h3 className="font-semibold text-blue-900 mb-3 text-base leading-tight">
                     {pub.title}
                   </h3>
-                  <p className="text-sm text-blue-700 mb-4">{pub.author}</p>
+                  <p className="text-sm text-blue-700 mb-4 font-medium">{pub.author}</p>
                   <p className="text-xs text-blue-600">{pub.date}</p>
                 </motion.div>
               ))}
@@ -303,12 +289,12 @@ export default function LandingPage() {
         </section>
 
         {/* About Section */}
-        <section id="about" className="px-4 py-16 sm:py-24 lg:py-32 lg:px-8 bg-blue-50">
+        <section id="about" className="px-4 py-16 sm:py-24 lg:py-32 lg:px-8 bg-white">
           <div className="mx-auto max-w-4xl">
             <div className="text-center mb-12">
-              <h2 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-6">Our Mission & Values</h2>
-              <p className="text-lg text-blue-800 leading-relaxed">
-                AUCA Connect is built on the commitment to preserve, protect, and promote the scholarly achievements of our academic community. We ensure that the knowledge created at AUCA is discoverable, accessible, and preserved for future generations.
+              <h2 className="text-3xl sm:text-4xl font-bold text-blue-900 mb-4">Our Mission</h2>
+              <p className="text-base text-blue-800 leading-relaxed">
+                AUCA Connect preserves, protects, and promotes the scholarly achievements of our academic community. We ensure knowledge created at AUCA is discoverable, accessible, and preserved for future generations.
               </p>
             </div>
             
@@ -327,9 +313,9 @@ export default function LandingPage() {
                   description: "Secure infrastructure ensuring your academic work remains accessible for decades."
                 }
               ].map((item, i) => (
-                <div key={i} className="border border-blue-200 rounded-lg p-6 bg-white hover:border-amber-400 hover:shadow-md transition-all">
+                <div key={i} className="border border-blue-200 rounded-lg p-6 bg-blue-50 hover:border-blue-400 hover:shadow-md transition-all">
                   <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-                    <span className="h-2 w-2 rounded-full bg-amber-500"></span>
+                    <span className="h-2.5 w-2.5 rounded-full bg-blue-900"></span>
                     {item.title}
                   </h3>
                   <p className="text-blue-700 text-sm leading-relaxed">{item.description}</p>
