@@ -47,9 +47,9 @@ export function ExamOfficeDashboard() {
         <div className="flex items-center gap-2">
           <Button 
             onClick={() => navigate("/exam-office/timetable")} 
-            className="h-8 gap-1.5 bg-[#1d3557] hover:bg-[#2c4e7d] text-white font-bold text-[9px] uppercase tracking-wider shadow-md px-4 rounded-xl transition-all active:scale-95 border-0"
+            className="btn-auca h-8 gap-1.5 text-[9px] font-bold uppercase tracking-wider transition-all active:scale-95"
           >
-            <Calendar className="h-4 w-4" /> Manage Calendar
+            <Calendar className="h-4 w-4 ui-icon" /> Manage Calendar
           </Button>
         </div>
       </div>
@@ -73,7 +73,7 @@ export function ExamOfficeDashboard() {
           </div>
           <Button 
             variant="outline" 
-            className="text-[9px] font-bold uppercase tracking-wider border-[#1d3557]/20 text-[#1d3557] hover:bg-[#1d3557]/5 h-7.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1 flex-shrink-0" 
+            className="text-[9px] font-bold uppercase tracking-wider border-auca text-auca hover:bg-auca-soft h-7.5 px-3 rounded-xl transition-all flex items-center justify-center gap-1 flex-shrink-0" 
             onClick={() => navigate("/exam-office/clashes")}
           >
             Resolve Clashes <ArrowRight className="h-3 w-3" />
@@ -91,7 +91,7 @@ export function ExamOfficeDashboard() {
             <Card 
               key={i} 
               onClick={() => navigate(stat.path)}
-              className="group shadow-sm border-slate-200 bg-white rounded-xl overflow-hidden transition-all hover:border-[#1d3557]/30 cursor-pointer"
+              className="group shadow-sm border-slate-200 bg-white rounded-xl overflow-hidden transition-all hover:border-auca cursor-pointer"
             >
               <CardContent className="p-2.5 flex items-center gap-3 text-left">
                 <div className={`h-8 w-8 rounded-lg ${stat.bg} flex items-center justify-center ${stat.color} border border-transparent transition-all group-hover:scale-105`}>
@@ -123,7 +123,7 @@ export function ExamOfficeDashboard() {
                     <div key={exam.id} className="p-2 flex items-center justify-between text-left">
                       <div>
                         <div className="flex items-center gap-1">
-                          <Badge className="bg-[#1d3557]/10 text-[#1d3557] border-0 text-[8px] font-bold px-1.5 py-0">{exam.courseCode}</Badge>
+                          <Badge className="bg-auca-soft text-auca border-0 text-[8px] font-bold px-1.5 py-0">{exam.courseCode}</Badge>
                           <span className="text-[11px] font-bold text-slate-700 truncate max-w-[120px]">{exam.courseName}</span>
                         </div>
                         <span className="text-[9px] text-slate-400 font-semibold">{exam.date} • {exam.startTime}</span>
@@ -135,7 +135,7 @@ export function ExamOfficeDashboard() {
               )}
               <Button 
                 variant="ghost" 
-                className="w-full text-[9px] font-bold uppercase tracking-wider text-[#1d3557] hover:bg-slate-50 h-7.5 rounded-b-2xl border-t"
+                className="w-full text-[9px] font-bold uppercase tracking-wider text-auca hover:bg-slate-50 h-7.5 rounded-b-2xl border-t"
                 onClick={() => navigate("/exam-office/timetable")}
               >
                 View All Sessions
@@ -163,7 +163,7 @@ export function ExamOfficeDashboard() {
                       <Badge variant="outline" className={`text-[8px] font-bold ${
                         inv.status === "On Duty" 
                           ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30" 
-                          : "bg-[#1d3557]/10 text-[#1d3557] border-[#1d3557]/30"
+                          : "bg-auca-soft text-auca border-auca"
                       }`}>
                         {inv.status}
                       </Badge>
@@ -173,7 +173,7 @@ export function ExamOfficeDashboard() {
               )}
               <Button 
                 variant="ghost" 
-                className="w-full text-[9px] font-bold uppercase tracking-wider text-[#1d3557] hover:bg-slate-50 h-7.5 rounded-b-2xl border-t"
+                className="w-full text-[9px] font-bold uppercase tracking-wider text-auca hover:bg-slate-50 h-7.5 rounded-b-2xl border-t"
                 onClick={() => navigate("/exam-office/invigilators")}
               >
                 Manage Roster
@@ -209,7 +209,7 @@ export function ExamOfficeDashboard() {
               )}
               <Button 
                 variant="ghost" 
-                className="w-full text-[9px] font-bold uppercase tracking-wider text-[#1d3557] hover:bg-slate-50 h-7.5 rounded-b-2xl border-t"
+                className="w-full text-[9px] font-bold uppercase tracking-wider text-auca hover:bg-slate-50 h-7.5 rounded-b-2xl border-t"
                 onClick={() => navigate("/exam-office/venues")}
               >
                 View Venue registry

@@ -98,7 +98,7 @@ export function LecturerDashboard() {
       {/* Overview */}
       <Card className="overflow-hidden border-slate-200 shadow-sm">
         <CardContent className="p-0">
-          <div className="bg-[#1d3557] px-4 py-2.5">
+          <div className="bg-auca px-4 py-2.5">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
               <div className="flex items-center gap-3 min-w-0">
                 <div className="h-8 w-8 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-white text-[10px] font-black flex-shrink-0">
@@ -188,21 +188,21 @@ export function LecturerDashboard() {
               key={a.to}
               type="button"
               onClick={() => navigate(a.to)}
-              className="text-left group border border-slate-200 bg-white rounded-2xl p-3 shadow-sm hover:shadow-md hover:border-[#1d3557]/30 transition-all duration-300"
+              className="text-left group border border-slate-200 bg-white rounded-2xl p-3 shadow-sm hover:shadow-md hover:border-auca transition-all duration-300"
             >
               <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0">
                   <p className="text-[8px] font-black uppercase tracking-widest text-slate-500">Action</p>
-                  <p className="text-[10px] font-black text-slate-900 truncate group-hover:text-[#1d3557] transition-colors">
+                  <p className="text-[10px] font-black text-slate-900 truncate group-hover:text-auca transition-colors">
                     {a.title}
                   </p>
                   <p className="text-[8px] text-slate-500 leading-relaxed line-clamp-1">{a.description}</p>
                 </div>
-                <div className="h-8 w-8 rounded-xl bg-[#f0f7ff] border border-blue-100 flex items-center justify-center text-[#1d3557] flex-shrink-0">
+                <div className="h-8 w-8 rounded-xl bg-auca-soft border border-auca flex items-center justify-center text-auca flex-shrink-0">
                   <a.icon className="h-[16px] w-[16px]" />
                 </div>
               </div>
-              <div className="mt-2 flex items-center justify-end text-[#1d3557]/80 text-[7px] font-black uppercase tracking-widest gap-1.5">
+              <div className="mt-2 flex items-center justify-end text-auca opacity-80 text-[7px] font-black uppercase tracking-widest gap-1.5">
                 Open <ArrowRight className="h-[12px] w-[12px] transition-transform group-hover:translate-x-0.5" />
               </div>
             </button>

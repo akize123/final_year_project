@@ -52,7 +52,7 @@ export function ModeratorDashboard() {
       {/* ── Quality Assurance Roadmap ── */}
       <Card className="group w-full max-w-[44rem] mx-auto border-slate-100 shadow-xl shadow-slate-200/15 bg-white rounded-[1.25rem] overflow-hidden hover:shadow-2xl transition-all duration-500">
         <CardContent className="p-0">
-          <div className="bg-[#1d3557] px-2.5 py-2.5 flex items-center justify-between">
+          <div className="bg-auca px-2.5 py-2.5 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="h-7 w-7 rounded-xl bg-white/10 flex items-center justify-center border border-white/10">
                 <ShieldCheck className="h-3.5 w-3.5 text-white" />
@@ -77,13 +77,13 @@ export function ModeratorDashboard() {
                 <div key={i} className="relative z-10 flex flex-col items-center group">
                   <div className={`h-8 w-8 rounded-2xl flex items-center justify-center border-2 transition-all duration-500 ${
                     step.status === "completed" ? "bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20" :
-                    step.status === "current" ? "bg-white border-[#1d3557] text-[#1d3557] shadow-2xl scale-110 z-20" :
+                    step.status === "current" ? "bg-white border-auca text-auca shadow-2xl scale-110 z-20" :
                     "bg-white border-slate-100 text-slate-300 group-hover:border-slate-200"
                   }`}>
                     <step.icon className={`h-3.5 w-3.5 ${step.status === "current" ? "animate-pulse" : ""}`} />
                   </div>
                   <span className={`mt-2 text-[7px] font-bold uppercase tracking-[0.12em] transition-colors ${
-                    step.status === "pending" ? "text-slate-400" : step.status === "current" ? "text-[#1d3557]" : "text-emerald-600"
+                    step.status === "pending" ? "text-slate-400" : step.status === "current" ? "text-auca" : "text-emerald-600"
                   }`}>{step.label}</span>
                 </div>
               ))}
@@ -106,12 +106,12 @@ export function ModeratorDashboard() {
             <CardContent className="p-0">
               <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-slate-50/50">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-2xl bg-white flex items-center justify-center text-[#1d3557] border border-slate-100 shadow-sm">
+                  <div className="h-10 w-10 rounded-2xl bg-white flex items-center justify-center text-auca border border-slate-100 shadow-sm">
                     <ShieldCheck className="h-4.5 w-4.5" />
                   </div>
                   <h2 className="text-[13px] font-bold text-slate-800 uppercase tracking-widest">Verification Queue</h2>
                 </div>
-                <Button variant="ghost" className="text-[9px] font-bold text-[#1d3557] hover:bg-slate-100 px-4 py-2 rounded-xl uppercase tracking-widest" onClick={() => navigate("/moderation") }>
+                <Button variant="ghost" className="text-[9px] font-bold text-auca hover:bg-slate-100 px-4 py-2 rounded-xl uppercase tracking-widest" onClick={() => navigate("/moderation") }>
                   Full Report <ChevronRight className="h-4 w-4 ml-1" />
                 </Button>
               </div>
@@ -138,14 +138,14 @@ export function ModeratorDashboard() {
                   {queuePreview.map((item, idx) => (
                     <div key={item.title} className="group cursor-pointer p-4 rounded-3xl border border-slate-100 hover:bg-slate-50 transition-all duration-300">
                       <div className="flex items-center justify-between mb-2">
-                        <h4 className="text-[13px] font-bold text-slate-800 group-hover:text-[#1d3557] transition-colors">{item.title}</h4>
-                        <Badge className="bg-[#1d3557] text-white border-0 text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded-full shadow-lg shadow-[#1d3557]/20">
+                        <h4 className="text-[13px] font-bold text-slate-800 group-hover:text-auca transition-colors">{item.title}</h4>
+                        <Badge className="bg-auca text-white border-0 text-[8px] font-bold uppercase tracking-widest px-2 py-1 rounded-full shadow-lg shadow-auca">
                           {item.dept}
                         </Badge>
                       </div>
                       <div className="flex items-center gap-3 mb-3 text-[10px] text-slate-500 font-semibold">
                         <div className="flex items-center gap-2">
-                          <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center text-[9px] text-slate-600 border border-slate-200 group-hover:bg-[#1d3557] group-hover:text-white transition-all duration-300">
+                          <div className="h-6 w-6 rounded-full bg-slate-100 flex items-center justify-center text-[9px] text-slate-600 border border-slate-200 group-hover:bg-auca group-hover:text-white transition-all duration-300">
                             {item.initials}
                           </div>
                           <span className="uppercase tracking-widest">{item.author}</span>
@@ -181,14 +181,14 @@ export function ModeratorDashboard() {
                   <h2 className="text-[14px] font-bold text-slate-800 uppercase tracking-widest">Master Feed</h2>
                   <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest opacity-60">Verified decisions logs</p>
                 </div>
-                <Activity className="h-5 w-5 text-[#1d3557] animate-pulse" />
+                <Activity className="h-5 w-5 text-auca animate-pulse" />
               </div>
               
               <div className="p-4 text-center space-y-2">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-3xl bg-[#1d3557]/10 text-[#1d3557] shadow-sm">
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-3xl bg-auca/10 text-auca shadow-sm">
                   <Activity className="h-5 w-5" />
                 </div>
-                <Button className="mx-auto w-full max-w-xs h-10 bg-[#1d3557] hover:bg-[#2c4e7d] text-white font-bold uppercase tracking-widest text-[10px] rounded-2xl shadow-lg shadow-[#1d3557]/20 transition-all" onClick={() => navigate("/moderation") }>
+                <Button className="mx-auto w-full max-w-xs h-10 btn-auca transition-all" onClick={() => navigate("/moderation") }>
                   View Master Feed
                 </Button>
               </div>

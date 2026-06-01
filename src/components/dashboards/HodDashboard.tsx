@@ -82,13 +82,13 @@ export function HodDashboard() {
           
           <Tabs value={activeTab} onValueChange={setActiveTab} className="hidden lg:block">
             <TabsList className="bg-slate-100/50 p-1 rounded-xl border border-slate-200">
-              <TabsTrigger value="overview" className="gap-2 px-6 py-2 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-[#1d3557] data-[state=active]:text-white rounded-lg transition-all">
+              <TabsTrigger value="overview" className="gap-2 px-6 py-2 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-auca data-[state=active]:text-white rounded-lg transition-all">
                 <LayoutGrid className="h-3.5 w-3.5" /> Departmental
               </TabsTrigger>
-              <TabsTrigger value="validation" className="gap-2 px-6 py-2 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-[#1d3557] data-[state=active]:text-white rounded-lg transition-all">
+              <TabsTrigger value="validation" className="gap-2 px-6 py-2 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-auca data-[state=active]:text-white rounded-lg transition-all">
                 <ShieldCheck className="h-3.5 w-3.5" /> Exam Validation
               </TabsTrigger>
-              <TabsTrigger value="alerts" className="gap-2 px-6 py-2 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-[#1d3557] data-[state=active]:text-white rounded-lg transition-all">
+              <TabsTrigger value="alerts" className="gap-2 px-6 py-2 text-[10px] font-bold uppercase tracking-widest data-[state=active]:bg-auca data-[state=active]:text-white rounded-lg transition-all">
                 <AlertTriangle className="h-3.5 w-3.5" /> Audit Alerts
               </TabsTrigger>
             </TabsList>
@@ -96,12 +96,12 @@ export function HodDashboard() {
         </div>
 
         <div className="flex items-center gap-3">
-          <Button variant="outline" className="h-10 gap-2 font-bold text-slate-600 bg-white shadow-sm border-slate-200 rounded-xl hover:text-[#1d3557] hover:border-[#1d3557]/30 transition-all">
+          <Button variant="outline" className="h-10 gap-2 font-bold text-slate-600 bg-white shadow-sm border-slate-200 rounded-xl hover:text-auca hover:border-auca transition-all">
             <Filter className="h-4 w-4" /> Filters
           </Button>
           <Button 
             onClick={() => navigate("/hod/reports")} 
-            className="h-11 gap-2 bg-[#1d3557] hover:bg-[#2c4e7d] font-bold shadow-lg shadow-[#1d3557]/20 px-6 rounded-2xl transition-all active:scale-95"
+            className="h-11 gap-2 btn-auca font-bold shadow-auca px-6 rounded-2xl transition-all active:scale-95"
           >
             <BarChart2 className="h-5 w-5" /> Generate Reports
           </Button>
@@ -116,7 +116,7 @@ export function HodDashboard() {
               <div className="lg:col-span-2">
                 <Card className="group border-slate-100 shadow-xl shadow-slate-200/20 bg-white rounded-[2rem] overflow-hidden">
                   <CardContent className="p-0">
-                    <div className="bg-[#1d3557] px-6 py-4 flex items-center justify-between">
+                    <div className="bg-auca px-6 py-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <ProgressIcon className="h-4 w-4 text-white/70" />
                         <h3 className="text-[11px] font-bold text-white uppercase tracking-[0.2em]">Academic Roadmap</h3>
@@ -136,7 +136,7 @@ export function HodDashboard() {
                           <div key={i} className="relative z-10 flex flex-col items-center">
                             <div className={`h-10 w-10 rounded-xl flex items-center justify-center border transition-all duration-500 ${
                               step.status === "completed" ? "bg-emerald-500 border-emerald-500 text-white" :
-                              step.status === "current" ? "bg-white border-[#1d3557] text-[#1d3557] scale-110 shadow-lg" :
+                              step.status === "current" ? "bg-white border-auca text-auca scale-110 shadow-lg" :
                               "bg-white border-slate-100 text-slate-300"
                             }`}>
                               <step.icon className="h-4 w-4" />
@@ -162,7 +162,7 @@ export function HodDashboard() {
                     <p className="text-[13px] text-slate-600 font-medium leading-relaxed mb-6">
                       3 course syllabi remain unverified for the next session. Review faculty loads.
                     </p>
-                    <Button variant="outline" className="w-full text-[10px] font-bold uppercase tracking-widest border-slate-200 hover:text-[#1d3557] rounded-xl" onClick={() => navigate("/hod/faculty")}>
+                    <Button variant="outline" className="w-full text-[10px] font-bold uppercase tracking-widest border-slate-200 hover:text-auca rounded-xl" onClick={() => navigate("/hod/faculty")}>
                       Manage Faculty
                     </Button>
                   </CardContent>
@@ -178,7 +178,7 @@ export function HodDashboard() {
                 { label: "Courses", value: deptStats.coursesOffered, icon: BookOpen, color: "text-amber-600", bg: "bg-amber-50" },
                 { label: "Exams Flagged", value: deptStats.examsPending, icon: Shield, color: "text-red-600", bg: "bg-red-50" },
               ].map((stat, i) => (
-                <Card key={i} className="group shadow-lg shadow-slate-200/10 border-slate-100 bg-white rounded-2xl overflow-hidden transition-all hover:border-[#1d3557]/20">
+                <Card key={i} className="group shadow-lg shadow-slate-200/10 border-slate-100 bg-white rounded-2xl overflow-hidden transition-all hover:border-auca">
                   <CardContent className="p-4 flex items-center gap-4">
                     <div className={`h-10 w-10 rounded-xl ${stat.bg} flex items-center justify-center ${stat.color} border border-transparent transition-all`}>
                       <stat.icon className="h-5 w-5" />
@@ -234,11 +234,11 @@ export function HodDashboard() {
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2 text-[10px] font-bold uppercase text-slate-400">
-                          <span className="text-[#1d3557]">{alert.course}</span>
+                          <span className="text-auca">{alert.course}</span>
                           <span>•</span>
                           <span>{alert.time}</span>
                         </div>
-                        <p className="text-[13px] text-slate-700 font-medium leading-relaxed group-hover:text-[#1d3557]">
+                        <p className="text-[13px] text-slate-700 font-medium leading-relaxed group-hover:text-auca">
                           {alert.question}
                         </p>
                       </div>
@@ -246,7 +246,7 @@ export function HodDashboard() {
                   ))}
                 </div>
                 <div className="p-6 border-t border-slate-100 bg-slate-50/50">
-                  <Button className="w-full h-11 bg-[#1d3557] hover:bg-[#2c4e7d] text-white font-bold uppercase tracking-widest text-[10px] rounded-xl shadow-lg">
+                  <Button className="w-full h-11 btn-auca text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-lg">
                     Access Department Hub
                   </Button>
                 </div>

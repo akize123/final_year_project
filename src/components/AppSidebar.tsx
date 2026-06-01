@@ -148,10 +148,10 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
     : "bg-[#1d3557] text-white hover:bg-[#1d3557] hover:text-white shadow-sm font-black";
 
   return (
-    <Sidebar collapsible="icon" className="z-10 border-r border-slate-200 bg-white font-body">
+    <Sidebar collapsible="icon" className="z-10 border-r border-slate-200 bg-white/95 shadow-sm backdrop-blur-xl font-body">
       <SidebarContent className="bg-transparent">
         {/* Brand header */}
-        <div className="border-b border-[#1d3557]/20 px-3 h-9 flex items-center bg-[#1d3557]">
+        <div className="border-b border-[#1d3557]/15 px-3 h-10 flex items-center bg-[#1d3557]">
           <div className="flex items-center gap-3">
             <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1 shadow-sm">
               <img
@@ -224,16 +224,6 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
                         >
                           <item.icon className={(isLargeSidebar || item.roles.includes("student")) ? "mr-3 !h-[18px] !w-[18px] shrink-0" : "mr-2 h-3.5 w-3.5 shrink-0"} />
                           {!collapsed && <span className="flex-1 truncate">{t(item.title)}</span>}
-                          {!collapsed && item.badge && (
-                            <div
-                              className={(isLargeSidebar || item.roles.includes("student"))
-                                ? "ml-auto flex h-[16px] min-w-[16px] items-center justify-center rounded-full bg-destructive px-1 text-[9px] font-bold text-destructive-foreground"
-                                : "ml-auto flex h-[14px] min-w-[14px] items-center justify-center rounded-full bg-destructive px-1 text-[8px] font-semibold text-destructive-foreground"
-                              }
-                            >
-                              {item.badge}
-                            </div>
-                          )}
                         </NavLink>
                       </SidebarMenuButton>
                     </SidebarMenuItem>

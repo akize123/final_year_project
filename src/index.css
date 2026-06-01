@@ -7,11 +7,11 @@
 @layer base {
   :root {
     /* Landing-aligned: white surfaces, vivid blue primary */
-    --background: 0 0% 100%;
-    --foreground: 215 25% 27%;
+    --background: 212 20% 97%;
+    --foreground: 215 20% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 27%;
+    --card-foreground: 215 20% 20%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 215 25% 27%;
@@ -91,3 +91,122 @@
     background-size: 40px 40px;
   }
 }
+
+/* AUCA design tokens and small utilities (visual-only) */
+@layer base {
+  :root {
+    /* AUCA-brand suggestion: deep blue + gold accents (replace if you have exact brand values) */
+    --auca-blue: 217 62% 20%;
+    --auca-gold: 44 78% 57%;
+
+    /* Additional gray scale for neutral surfaces */
+    --auca-gray-100: 210 20% 98%;
+    --auca-gray-200: 210 18% 96%;
+    --auca-gray-700: 215 16% 20%;
+
+    /* Spacing scale (useful for consistent paddings/margins) */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 24px;
+    --space-6: 32px;
+
+    /* Typography tokens */
+    --base-font-size: 16px;
+    --scale-ratio: 1.125;
+    --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    --font-heading: "Plus Jakarta Sans", --font-body;
+  }
+
+  html { font-size: var(--base-font-size); }
+  body { font-family: var(--font-body); }
+  h1, h2, h3, h4 { font-family: var(--font-heading); }
+}
+
+@layer components {
+  .container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: var(--space-4);
+    padding-right: var(--space-4);
+  }
+
+  .auca-brand {
+    color: hsl(var(--auca-blue));
+  }
+
+  .btn-auca {
+    background: hsl(var(--auca-blue));
+    color: hsl(0 0% 100%);
+    border-radius: var(--radius);
+    padding: 0.5rem 0.9rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  }
+  .btn-auca:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
+
+  .bg-auca { background: hsl(var(--auca-blue)); }
+  .bg-auca-soft { background: hsl(var(--auca-blue) / 0.08); }
+  .bg-auca-gold { background: hsl(var(--auca-gold)); }
+  .bg-auca-gold-soft { background: hsl(var(--auca-gold) / 0.12); }
+  .text-auca { color: hsl(var(--auca-blue)); }
+  .text-auca-gold { color: hsl(var(--auca-gold)); }
+  .border-auca { border-color: hsl(var(--auca-blue) / 0.22); }
+  .border-auca-gold { border-color: hsl(var(--auca-gold) / 0.22); }
+  .shadow-auca { box-shadow: 0 18px 42px rgba(27, 83, 145, 0.14); }
+
+  .card-auca {
+    border-radius: 12px;
+    background: hsl(var(--card) / 0.98);
+    padding: var(--space-4);
+    border: 1px solid hsl(var(--border) / 0.6);
+    box-shadow: 0 6px 20px rgba(17,24,39,0.04);
+  }
+
+  /* small utility to make forms easier to scan */
+  .form-row { display: flex; gap: var(--space-4); align-items: center; }
+  .muted { color: hsl(var(--muted-foreground)); }
+}
+
+/* Accessibility helpers */
+@layer utilities {
+  .focus-outline {
+    outline: 3px solid hsl(var(--ring) / 0.18);
+    outline-offset: 2px;
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Standardize icon sizing and inherit color so icons look consistent */
+  .ui-icon {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    flex-shrink: 0;
+  }
+  /* Ensure SVG icons inherit text color */
+  svg { color: inherit; }
+
+  /* Map common slate utility color classes to design tokens for consistent text color across dashboards */
+  .text-slate-900, .text-slate-800, .text-slate-700 { color: hsl(var(--foreground)) !important; }
+  .text-slate-600, .text-slate-500, .text-slate-400, .text-slate-300 { color: hsl(var(--muted-foreground)) !important; }
+
+  /* Backwards-compat overrides for legacy hard-coded AUCA blue (#1d3557) */
+  [class*="#1d3557"] { --_auca-blue: hsl(var(--auca-blue)); }
+  [class*="bg-[#1d3557]"], [class*="bg-[#1d3557]/"] { background-color: var(--_auca-blue) !important; }
+  [class*="text-[#1d3557]"], [class*="text-[#1d3557]/"] { color: var(--_auca-blue) !important; }
+  [class*="border-[#1d3557]"], [class*="border-[#1d3557]/"] { border-color: var(--_auca-blue) !important; }
+  [class*="from-[#1d3557]"], [class*="via-[#1d3557]"], [class*="to-[#1d3557]"] { background-image: none !important; background-color: var(--_auca-blue) !important; }
+}
+

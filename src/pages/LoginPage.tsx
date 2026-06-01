@@ -51,7 +51,7 @@ const LoginPage = () => {
           </div>
 
           <div className="space-y-2 text-center">
-            <h1 className="text-5xl font-medium text-slate-800 tracking-tight">{t("Login")}</h1>
+            <h1 className="text-4xl font-semibold text-slate-800 tracking-tight">{t("Login")}</h1>
           </div>
 
           {/* Form remains clean, role selector removed as requested */}
@@ -105,7 +105,7 @@ const LoginPage = () => {
  
             <Button
               type="submit"
-              className="h-14 w-full bg-[#1d3557] hover:bg-[#2c4e7d] text-white text-[13px] font-bold uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-[#1d3557]/20 transition-all active:scale-95 group"
+              className="h-14 w-full bg-[#1d3557] hover:bg-[#2c4e7d] text-white text-[12px] font-bold uppercase tracking-[0.2em] rounded-xl shadow-lg shadow-[#1d3557]/20 transition-all active:scale-95 group"
               disabled={verifying}
             >
               {verifying ? (
