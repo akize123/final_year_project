@@ -35,6 +35,17 @@ import NotFound from "@/pages/NotFound";
 import MyDocumentsPage from "@/pages/MyDocumentsPage";
 import MyAttendancePage from "@/pages/MyAttendancePage";
 import SubmitDocumentPage from "@/pages/SubmitDocumentPage";
+import AcademicDocumentsPage from "@/pages/student/documents/AcademicDocumentsPage";
+import FinancialDocumentsPage from "@/pages/student/documents/FinancialDocumentsPage";
+import InternshipDocumentsPage from "@/pages/student/documents/InternshipDocumentsPage";
+import ClearanceDocumentsPage from "@/pages/student/documents/ClearanceDocumentsPage";
+import FinalYearProjectPage from "@/pages/student/documents/FinalYearProjectPage";
+import StudentProfilePage from "@/pages/student/StudentProfilePage";
+import StudentGradesPage from "@/pages/student/StudentGradesPage";
+import StudentSchedulePage from "@/pages/student/StudentSchedulePage";
+import CertificatesPage from "@/pages/student/documents/CertificatesPage";
+import StudentProjectsPage from "@/pages/student/StudentProjectsPage";
+import StudentSettingsPage from "@/pages/student/StudentSettingsPage";
 import AttendanceManagementPage from "@/pages/AttendanceManagementPage";
 import ExamOfficePage from "@/pages/ExamOfficePage";
 import LecturerCourseMaterialsPage from "@/pages/lecturer/LecturerCourseMaterialsPage";
@@ -90,11 +101,24 @@ function AppRoutes() {
 
 
         {/* Student Records */}
-        <Route path="/my-documents" element={<ProtectedRoute allowedRoles={["student"]}><MyDocumentsPage /></ProtectedRoute>} />
+        <Route path="/my-documents" element={<Navigate to="/student/documents/academic" replace />} />
+        <Route path="/student/profile" element={<ProtectedRoute allowedRoles={["student"]}><StudentProfilePage /></ProtectedRoute>} />
+        <Route path="/student/grades" element={<ProtectedRoute allowedRoles={["student"]}><StudentGradesPage /></ProtectedRoute>} />
+        <Route path="/student/assignments" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/student/schedule" element={<ProtectedRoute allowedRoles={["student"]}><StudentSchedulePage /></ProtectedRoute>} />
+        <Route path="/student/timetable" element={<Navigate to="/student/schedule" replace />} />
+        <Route path="/my-attendance" element={<Navigate to="/student/schedule" replace />} />
+        <Route path="/student/projects" element={<ProtectedRoute allowedRoles={["student"]}><StudentProjectsPage /></ProtectedRoute>} />
+        <Route path="/student/settings" element={<ProtectedRoute allowedRoles={["student"]}><StudentSettingsPage /></ProtectedRoute>} />
+        <Route path="/student/documents/academic" element={<ProtectedRoute allowedRoles={["student"]}><AcademicDocumentsPage /></ProtectedRoute>} />
+        <Route path="/student/documents/financial" element={<ProtectedRoute allowedRoles={["student"]}><FinancialDocumentsPage /></ProtectedRoute>} />
+        <Route path="/student/documents/internship" element={<ProtectedRoute allowedRoles={["student"]}><InternshipDocumentsPage /></ProtectedRoute>} />
+        <Route path="/student/documents/clearance" element={<ProtectedRoute allowedRoles={["student"]}><ClearanceDocumentsPage /></ProtectedRoute>} />
+        <Route path="/student/documents/certificates" element={<ProtectedRoute allowedRoles={["student"]}><CertificatesPage /></ProtectedRoute>} />
+        <Route path="/student/documents/final-year-project" element={<ProtectedRoute allowedRoles={["student"]}><FinalYearProjectPage /></ProtectedRoute>} />
         <Route path="/my-submissions" element={<ProtectedRoute allowedRoles={["student"]}><MySubmissionsPage /></ProtectedRoute>} />
-        <Route path="/submit/project" element={<ProtectedRoute allowedRoles={["student"]}><SubmitProjectPage /></ProtectedRoute>} />
-        <Route path="/submit/document" element={<ProtectedRoute allowedRoles={["student"]}><SubmitDocumentPage /></ProtectedRoute>} />
-        <Route path="/my-attendance" element={<ProtectedRoute allowedRoles={["student"]}><MyAttendancePage /></ProtectedRoute>} />
+        <Route path="/submit/project" element={<Navigate to="/student/documents/final-year-project" replace />} />
+        <Route path="/submit/document" element={<Navigate to="/student/documents/academic" replace />} />
         <Route path="/my-reservations" element={<ProtectedRoute allowedRoles={["student", "lecturer", "moderator"]}><MyReservationsPage /></ProtectedRoute>} />
 
         {/* Lecturer Office */}
@@ -154,7 +178,6 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <div className="relative min-h-screen">
-              <div className="app-grid-overlay" aria-hidden />
               <div className="relative z-[1] min-h-screen">
                 <AppErrorBoundary>
                   <AppRoutes />

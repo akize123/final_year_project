@@ -103,10 +103,10 @@ const MyReservationsPage = () => {
 
   return (
     <AppLayout>
-      <div className="flex flex-col h-[calc(100vh-140px)] overflow-hidden pb-4 max-w-4xl mx-auto w-full">
+      <div className="ds-page-scroll max-w-4xl mx-auto w-full">
         
         {/* Header Section */}
-        <div className="flex justify-between items-center w-full flex-shrink-0 pt-2 pb-6 mb-6 border-b border-slate-200/60">
+        <div className="flex justify-between items-center w-full pt-2 pb-6 mb-6 border-b border-slate-200/60">
           <h1 className="text-[22px] font-black text-[#1d3557] leading-tight tracking-tight">
             Manage Your Reservation
           </h1>
@@ -175,7 +175,7 @@ const MyReservationsPage = () => {
         </div>
 
         {/* Centered Tabs */}
-        <div className="flex justify-center gap-2 flex-wrap flex-shrink-0 mb-6">
+        <div className="flex justify-center gap-2 flex-wrap mb-6">
           {tabs.map((t) => (
             <button
               key={t.id}
@@ -199,14 +199,14 @@ const MyReservationsPage = () => {
         </div>
 
         {filtered.length === 0 ? (
-          <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-16 text-center flex-1 flex flex-col items-center justify-center transition-all hover:bg-slate-50">
+          <div className="rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50/50 p-16 text-center flex flex-col items-center justify-center transition-all hover:bg-slate-50">
             <div className="h-16 w-16 bg-white rounded-full shadow-sm flex items-center justify-center mb-6 border border-slate-100">
               <CalendarDays className="h-6 w-6 text-slate-300" />
             </div>
             <p className="text-[13px] font-bold text-slate-400 uppercase tracking-widest">{emptyMessage[activeTab] ?? "No reservations in this list."}</p>
           </div>
         ) : (
-          <div className="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar">
+          <div className="space-y-3">
             {filtered.map((r) => (
               <div key={r.id} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-[#1d3557]/20 transition-all duration-300">
                 <div className="space-y-1.5 flex-1 min-w-0">
