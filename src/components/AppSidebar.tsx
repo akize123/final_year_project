@@ -140,39 +140,38 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
 
   const isLargeSidebar = ["lecturer", "hod", "exam_office"].includes(user?.role ?? "");
 
-  const linkBaseLarge = "group relative z-10 flex w-full items-center rounded-md px-3 py-3 text-base font-semibold text-slate-700 transition-all hover:bg-slate-100 hover:text-slate-900 border-l-2 border-l-transparent";
-  const linkBaseSmall = "group relative z-10 flex w-full items-center rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-100 hover:text-slate-900";
+  const linkBaseLarge = "group relative z-10 flex w-full items-center rounded-xl px-3 py-3 text-base font-semibold text-slate-100 bg-transparent transition-all hover:bg-[#256d94] border-l-2 border-l-transparent";
+  const linkBaseSmall = "group relative z-10 flex w-full items-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-100 bg-transparent transition-all hover:bg-[#256d94] border-l-2 border-l-transparent";
+  const sidebarButtonBase = "!bg-transparent !text-white hover:!bg-[#256d94] hover:!text-white !border-none shadow-none";
 
-  const linkActive = isLargeSidebar
-    ? "bg-gradient-to-r from-[#1d3557] to-[#2b4c7e] text-white hover:from-[#1d3557] hover:to-[#2b4c7e] hover:text-white shadow-sm font-semibold border-l-2 border-l-amber-500"
-    : "bg-[#1d3557] text-white hover:bg-[#1d3557] hover:text-white shadow-sm font-black";
+  const linkActive = "bg-[#1c5b7f] text-white shadow-none font-semibold border-l-4 border-[#7dd3c3]";
 
   return (
-    <Sidebar collapsible="icon" className="z-10 border-r border-slate-200 bg-white/95 shadow-sm backdrop-blur-xl font-body">
-      <SidebarContent className="bg-transparent">
+    <Sidebar collapsible="icon" className="z-10 border-r border-[#1c5b7f] bg-[#1f4d6a] text-white shadow-sm font-body">
+      <SidebarContent className="bg-[#1f4d6a]">
         {/* Brand header */}
-        <div className="border-b border-[#1d3557]/15 px-3 h-10 flex items-center bg-[#1d3557]">
+        <div className="border-b border-white/10 px-3 h-10 flex items-center bg-[#1f4d6a]">
           <div className="flex items-center gap-3">
-            <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white p-1 shadow-sm">
+            <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-white border border-slate-200 text-slate-900 shadow-sm">
               <img
                 src="/auca_logo1.png"
                 alt="AUCA Logo"
-                className="h-full w-full object-contain"
+                className="h-7 w-7 object-contain"
               />
             </div>
             {!collapsed && (
               <div>
-                <p className="text-[10px] font-semibold leading-tight tracking-tight text-white">AUCA Connect</p>
-                <p className="mt-0.5 text-[7px] font-bold uppercase tracking-widest text-blue-300">{t("Archive System")}</p>
+                <p className="text-[11px] font-semibold leading-tight tracking-tight text-white">AUCA Connect</p>
+                <p className="mt-0.5 text-[8px] font-bold uppercase tracking-widest text-blue-200">{t("Archive System")}</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Navigation items */}
-        <SidebarGroup className="bg-transparent mt-1">
+        <SidebarGroup className="bg-[#1f4d6a] mt-1">
           <SidebarGroupContent className="px-2">
-            <SidebarMenu>
+            <SidebarMenu className="bg-[#1f4d6a]">
               {navGroups
                 .flatMap((group) => group.items)
                 .filter((item) => item.roles.includes(user.role))
@@ -187,9 +186,10 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
                           onClick={() => setOpenMenus((s) => ({ ...s, [key]: !s[key] }))}
                           size={isLargeSidebar ? "lg" : "default"}
                           aria-expanded={open}
+                          className={sidebarButtonBase}
                         >
                           <div className={(isLargeSidebar || item.roles.includes("student")) ? linkBaseLarge : linkBaseSmall}>
-                            <item.icon className={(isLargeSidebar || item.roles.includes("student")) ? "mr-3 !h-[18px] !w-[18px] shrink-0" : "mr-2 h-3.5 w-3.5 shrink-0"} />
+                            <item.icon className={(isLargeSidebar || item.roles.includes("student")) ? "mr-3 !h-[18px] !w-[18px] shrink-0 text-slate-100" : "mr-2 h-3.5 w-3.5 shrink-0 text-slate-100"} />
                             {!collapsed && <span className="flex-1 truncate">{t(item.title)}</span>}
                           </div>
                         </SidebarMenuButton>
@@ -199,8 +199,8 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
                             {item.children.map((sub) => (
                               <SidebarMenuSubItem key={sub.url + sub.title}>
                                 <SidebarMenuSubButton asChild size="md">
-                                  <NavLink to={sub.url} className="flex items-center gap-2">
-                                    <sub.icon className="!h-4 !w-4" />
+                                  <NavLink to={sub.url} className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm font-semibold text-slate-100 bg-transparent transition-all hover:bg-[#256d94]">
+                                    <sub.icon className="!h-4 !w-4 text-slate-100" />
                                     {!collapsed && <span className="truncate">{t(sub.title)}</span>}
                                   </NavLink>
                                 </SidebarMenuSubButton>
@@ -215,14 +215,14 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
                   // Regular single-level item
                   return (
                     <SidebarMenuItem key={item.url + item.title}>
-                      <SidebarMenuButton asChild size={isLargeSidebar ? "lg" : "default"}>
+                      <SidebarMenuButton asChild size={isLargeSidebar ? "lg" : "default"} className={sidebarButtonBase}>
                         <NavLink
                           to={item.url}
                           end={item.url === "/dashboard"}
                           className={(isLargeSidebar || item.roles.includes("student")) ? linkBaseLarge : linkBaseSmall}
                           activeClassName={linkActive}
                         >
-                          <item.icon className={(isLargeSidebar || item.roles.includes("student")) ? "mr-3 !h-[18px] !w-[18px] shrink-0" : "mr-2 h-3.5 w-3.5 shrink-0"} />
+                          <item.icon className={(isLargeSidebar || item.roles.includes("student")) ? "mr-3 !h-[18px] !w-[18px] shrink-0 text-slate-100" : "mr-2 h-3.5 w-3.5 shrink-0 text-slate-100"} />
                           {!collapsed && <span className="flex-1 truncate">{t(item.title)}</span>}
                         </NavLink>
                       </SidebarMenuButton>
@@ -236,15 +236,15 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
       </SidebarContent>
 
       {/* User footer */}
-      <SidebarFooter className="border-t border-slate-100 bg-white p-3">
+      <SidebarFooter className="border-t border-[#1c5b7f] bg-[#1f4d6a] p-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-[#f0f7ff] border border-blue-100 text-[11px] font-bold text-[#1d3557] shadow-sm">
+          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-[#1c5b7f] border border-white/10 text-[11px] font-bold text-slate-100 shadow-none">
             {user.avatarInitials}
           </div>
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[10px] font-bold text-slate-800">{user.email}</p>
-              <p className="text-[8px] font-bold uppercase tracking-widest text-slate-400 mt-0.5">
+              <p className="truncate text-[10px] font-bold text-white">{user.email}</p>
+              <p className="text-[8px] font-bold uppercase tracking-widest text-slate-300 mt-0.5">
                 {user.role === "hod" ? t("Head of Dept.") : user.role === "moderator" ? t("Librarian") : t(user.role)}
               </p>
             </div>
@@ -253,7 +253,7 @@ export function AppSidebar({ onHelpClick: _onHelpClick }: AppSidebarProps) {
             <button
               type="button"
               onClick={logout}
-              className="text-slate-300 transition-colors hover:text-red-500 p-1.5 hover:bg-red-50 rounded-lg"
+              className="text-slate-300 transition-colors hover:text-white p-1.5 hover:bg-white/10 rounded-lg"
               aria-label={t("Log out")}
             >
               <LogOut className="h-4 w-4" />

@@ -16,7 +16,6 @@ const navy = {
 const centerNav = [
   { label: "Home", href: "#top" },
   { label: "About", href: "#about" },
-  { label: "Contact", href: "mailto:support@auca.ac.rw" },
 ];
 
 /** Abstract network — thin navy lines, soft node glows */
@@ -116,6 +115,21 @@ function NetworkGraphic() {
 }
 
 export default function LandingPage() {
+  const heroHighlights = [
+    "Centralized research repository",
+    "Submit and track projects",
+    "Search AUCA archives fast",
+    "Protect faculty publications",
+  ];
+  const [activeHighlight, setActiveHighlight] = React.useState(0);
+
+  React.useEffect(() => {
+    const interval = window.setInterval(() => {
+      setActiveHighlight((current) => (current + 1) % heroHighlights.length);
+    }, 3200);
+    return () => window.clearInterval(interval);
+  }, []);
+
   return (
     <div id="top" className="relative z-10 min-h-screen overflow-x-hidden bg-white font-body text-slate-600 antialiased">
       <header className="sticky top-0 z-50 border-b border-slate-200/90 bg-white">
@@ -130,43 +144,28 @@ export default function LandingPage() {
             </div>
           </Link>
 
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-10 md:flex">
-            {centerNav.map((item) =>
-              item.href.startsWith("http") || item.href.startsWith("mailto") ? (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
-                >
-                  {item.label}
-                </a>
-              ) : (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-800"
-                >
-                  {item.label}
-                </a>
-              )
-            )}
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 md:flex">
+            {centerNav.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="text-sm font-semibold text-slate-600 transition-colors hover:text-slate-900"
+              >
+                {item.label}
+              </a>
+            ))}
           </nav>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 md:inline-flex">
+              AUCA Connect
+            </span>
             <Button
-              variant="outline"
-              className="hidden rounded-full border-slate-300 bg-white px-5 text-sm font-medium text-[#152c52] shadow-none hover:bg-slate-50 sm:inline-flex"
-              asChild
-            >
-              <Link to="/login">Register</Link>
-            </Button>
-            <Button
-              className="hidden rounded-full border-0 px-6 text-sm font-medium text-white shadow-sm sm:inline-flex"
-              style={{ backgroundColor: navy.DEFAULT }}
+              className="rounded-full border-0 bg-[#152c52] px-6 text-sm font-semibold text-white shadow-sm sm:inline-flex hover:bg-[#122244]"
               asChild
             >
               <Link to="/login" className="hover:opacity-95">
-                Sign in
+                Register
               </Link>
             </Button>
             <Sheet>
@@ -192,12 +191,9 @@ export default function LandingPage() {
                       </a>
                     )
                   )}
-                  <div className="mt-4 flex flex-col gap-2 border-t border-slate-100 pt-4">
-                    <Button variant="outline" className="rounded-full border-slate-300" asChild>
+                  <div className="mt-4 flex flex-col gap-3 border-t border-slate-100 pt-4">
+                    <Button className="rounded-full bg-[#152c52] text-white hover:bg-[#122244]" asChild>
                       <Link to="/login">Register</Link>
-                    </Button>
-                    <Button className="rounded-full text-white" style={{ backgroundColor: navy.DEFAULT }} asChild>
-                      <Link to="/login">Sign in</Link>
                     </Button>
                   </div>
                 </nav>
@@ -216,35 +212,52 @@ export default function LandingPage() {
               transition={{ duration: 0.45, ease: "easeOut" }}
               className="order-2 max-w-xl space-y-7 lg:order-1"
             >
-              <h1 className="text-[1.35rem] font-medium uppercase leading-[1.35] tracking-[0.06em] text-slate-800 sm:text-2xl sm:leading-tight md:text-[1.75rem] lg:text-[1.85rem]">
-                A centralized academic archive system for collecting, preserving, and sharing AUCA research.
-              </h1>
-              <div className="h-1 w-14 rounded-full" style={{ backgroundColor: navy.DEFAULT }} />
-              <p className="max-w-md text-sm leading-relaxed text-slate-500 sm:text-[15px]">
-                One place for students and faculty to submit work, follow review, and explore what AUCA has already published — clear, searchable, and kept for the long term.
-              </p>
-              <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
-                <Button
-                  size="lg"
-                  className="rounded-full border-0 px-8 text-[15px] font-medium text-white shadow-md"
-                  style={{ backgroundColor: navy.DEFAULT }}
-                  asChild
-                >
-                  <Link to="/login">
-                    Get started
-                    <ArrowRight className="ml-2 h-4 w-4 opacity-90" />
-                  </Link>
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="rounded-full border-slate-300 bg-white px-8 text-[15px] font-medium text-slate-600 hover:bg-slate-50 hover:text-slate-800"
-                  asChild
-                >
-                  <Link to="/browse">Learn more</Link>
-                </Button>
+              <div className="inline-flex rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-600">
+                Academic archive system
               </div>
-              <p className="text-xs text-slate-400">Campus sign-in required for repository access.</p>
+              <h1 className="text-[1.75rem] font-bold uppercase leading-[1.1] tracking-[0.14em] text-slate-900 sm:text-[2.2rem] md:text-[2.55rem] lg:text-[2.75rem]">
+                AUCA Connect
+              </h1>
+              <p className="max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
+                Academic archive &amp; repository for AUCA’s student research, faculty publications, and institutional knowledge.
+              </p>
+
+              <div className="mt-6 rounded-3xl border border-slate-200 bg-slate-50 px-5 py-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3 text-sm text-slate-600 sm:text-base">
+                  <span className="font-semibold text-slate-900">Right now</span>
+                  <span className="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1 text-xs uppercase tracking-[0.24em] text-slate-500 shadow-sm">
+                    {heroHighlights[activeHighlight]}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-3 pt-6 sm:flex-row sm:items-center">
+                <Button
+                  size="lg"
+                  className="rounded-full border-0 bg-[#152c52] px-8 text-[15px] font-semibold text-white shadow-xl shadow-[#152c52]/15 hover:bg-[#122244]"
+                  asChild
+                >
+                  <Link to="/login">Register</Link>
+                </Button>
+                <div className="text-sm text-slate-500">
+                  <span className="font-semibold text-slate-900">Built for AUCA research workflows</span>
+                </div>
+              </div>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                <div className="rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-700 shadow-md shadow-slate-100">
+                  <p className="font-semibold text-slate-900">Structured submissions</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-slate-600">Keep academic work organized with submission stages, approvals, and archive history.</p>
+                </div>
+                <div className="rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-700 shadow-md shadow-slate-100">
+                  <p className="font-semibold text-slate-900">Fast discovery</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-slate-600">Search across projects, theses, and publications with cleaner results and filters.</p>
+                </div>
+                <div className="rounded-3xl border border-slate-200 bg-white p-5 text-sm text-slate-700 shadow-md shadow-slate-100">
+                  <p className="font-semibold text-slate-900">Protected access</p>
+                  <p className="mt-2 text-[13px] leading-relaxed text-slate-600">Ensure only AUCA members and authorized partners can view confidential research.</p>
+                </div>
+              </div>
             </motion.div>
 
             <motion.div
@@ -258,6 +271,7 @@ export default function LandingPage() {
                   className="absolute inset-0 -z-10 scale-105 rounded-[2rem] blur-3xl"
                   style={{ background: `radial-gradient(ellipse at center, ${navy.line}, transparent 65%)` }}
                 />
+                <div className="absolute right-0 top-0 z-20 hidden h-28 w-28 rounded-full bg-white/80 blur-3xl sm:block" />
                 <NetworkGraphic />
               </div>
             </motion.div>

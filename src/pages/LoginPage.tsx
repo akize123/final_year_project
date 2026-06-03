@@ -59,7 +59,7 @@ const LoginPage = () => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-bold tracking-wide text-slate-900">{t("Academic identity / Faculty code")}</Label>
+              <Label htmlFor="email" className="text-sm font-bold tracking-wide text-slate-900">Academic identity / Faculty code</Label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                 <Input
