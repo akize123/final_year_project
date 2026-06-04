@@ -74,6 +74,15 @@ export const ocrExtractedTimetable: TimetableSlot[] = [
 ];
 
 export const TIMETABLE_STORAGE_KEY = "auca_student_weekly_timetable";
+export const TIMETABLE_IMPORTED_KEY = "auca_timetable_imported";
+
+export function hasImportedTimetable(): boolean {
+  return localStorage.getItem(TIMETABLE_IMPORTED_KEY) === "true";
+}
+
+export function markTimetableImported(): void {
+  localStorage.setItem(TIMETABLE_IMPORTED_KEY, "true");
+}
 
 export function loadTimetable(): TimetableSlot[] {
   try {

@@ -13,6 +13,7 @@ import {
 import { deleteDocument, getPreviewUrl, downloadDocumentUrl } from "@/api/student/documents";
 import { mockAcademicDocs, mergeWithMock } from "@/data/student-documents-mock";
 import { getAuthToken } from "@/lib/auth-token";
+import { validateDocument } from "@/lib/document-scanner";
 import { toast } from "sonner";
 
 const SEMESTERS = [
@@ -57,8 +58,8 @@ export default function AcademicDocumentsPage() {
 
   return (
     <DocumentPageLayout
-      title="Academic Documents"
-      subtitle="Transcripts, registration forms, and exam attendance"
+      title="Academic Records"
+      headerCentered
       rows={rows}
       loading={loading}
       uploadDialogTitle="Upload Academic Document"
@@ -97,6 +98,14 @@ export default function AcademicDocumentsPage() {
       ]}
       onUpload={async (file, values) => {
         if (!file) return;
+
+        // Run AI Document Scanner
+        const docType = uploadType.includes("TRANSCRIPT") ? "transcript" : "general";
+        const validation = await validateDocument(file, docType as any);
+        if (!validation.valid) {
+          throw new Error(validation.error);
+        }
+
         if (getAuthToken()) {
           switch (uploadType) {
             case "OFFICIAL_TRANSCRIPT":
@@ -128,28 +137,52 @@ export default function AcademicDocumentsPage() {
       }}
       onPreview={async (id) => {
         if (id.startsWith("m-") || id.startsWith("local-")) {
-          toast.message("Preview available after server upload.");
+          toast.info("📄 Demo mode: preview opens for server-uploaded documents.", {
+            description: "Upload a real document to view it as a PDF.",
+          });
           return;
         }
         try {
-          window.open(await getPreviewUrl(id), "_blank");
+          const url = await getPreviewUrl(id);
+          window.open(url, "_blank", "noopener,noreferrer");
         } catch {
-          toast.error("Could not open preview.");
+          toast.error("Could not open preview. Please try again.");
         }
       }}
       onDownload={(id) => {
-        if (!id.startsWith("m-") && !id.startsWith("local-")) {
-          window.open(downloadDocumentUrl(id), "_blank");
-        }
-      }}
-      onDelete={async (id) => {
+        const row = rows.find((r) => r.documentId === id);
         if (id.startsWith("m-") || id.startsWith("local-")) {
-          setRows((prev) => prev.filter((r) => r.documentId !== id));
+          toast.info(`📥 Demo mode: "${row?.filename ?? "document"}" download available after server upload.`);
           return;
         }
-        if (!confirm("Delete this document?")) return;
-        await deleteDocument(id);
-        load();
+        const url = downloadDocumentUrl(id);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = row?.filename ?? "document";
+        a.target = "_blank";
+        a.rel = "noopener";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        toast.success(`Downloading "${row?.filename ?? "document"}"…`);
+      }}
+      onDelete={async (id) => {
+        const row = rows.find((r) => r.documentId === id);
+        const name = row?.filename ?? "this document";
+        if (id.startsWith("m-") || id.startsWith("local-")) {
+          if (!window.confirm(`Delete "${name}" from the list?`)) return;
+          setRows((prev) => prev.filter((r) => r.documentId !== id));
+          toast.success(`"${name}" removed.`);
+          return;
+        }
+        if (!window.confirm(`Permanently delete "${name}"? This cannot be undone.`)) return;
+        try {
+          await deleteDocument(id);
+          toast.success(`"${name}" deleted.`);
+          load();
+        } catch {
+          toast.error("Could not delete document. Please try again.");
+        }
       }}
     />
   );

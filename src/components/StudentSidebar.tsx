@@ -1,4 +1,5 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { ChevronDown } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   IconArchive,
@@ -8,7 +9,7 @@ import {
 } from "@/components/icons/FolderIcons";
 
 const documentChildren = [
-  { to: "/student/documents/academic", label: "Academic" },
+  { to: "/student/documents/academic", label: "Academic Records" },
   { to: "/student/documents/financial", label: "Financial" },
   { to: "/student/documents/internship", label: "Internship" },
   { to: "/student/documents/clearance", label: "Clearance" },
@@ -25,7 +26,7 @@ function NavCard({
 }: {
   to: string;
   label: string;
-  icon: ReactNode;
+  icon?: ReactNode;
   active?: boolean;
   end?: boolean;
 }) {
@@ -45,12 +46,9 @@ function NavCard({
 
 export function StudentSidebar() {
   const location = useLocation();
-  const scheduleTab = new URLSearchParams(location.search).get("tab");
-  const onTimetable =
-    location.pathname === "/student/schedule" &&
-    (scheduleTab === "timetable" || !scheduleTab);
-  const onAttendance =
-    location.pathname === "/student/schedule" && scheduleTab === "attendance";
+  const onDocuments = location.pathname.startsWith("/student/documents");
+  const [documentsOpen, setDocumentsOpen] = useState(onDocuments);
+  const onSchedule = location.pathname === "/student/schedule";
 
   return (
     <aside className="ds-sidebar ds-sidebar-fm">
@@ -68,30 +66,40 @@ export function StudentSidebar() {
         <NavCard
           to="/my-reservations"
           label="My Reservation"
-          icon={<IconFolder open={location.pathname === "/my-reservations"} size={21} light />}
         />
         <NavCard
-          to="/student/schedule?tab=timetable"
+          to="/student/schedule"
           label="Timetable"
-          active={onTimetable}
+          active={onSchedule}
           icon={<IconCalendar size={21} light />}
         />
-        <NavCard
-          to="/student/schedule?tab=attendance"
-          label="Attendance"
-          active={onAttendance}
-          icon={<IconFolder open={onAttendance} size={21} light />}
-        />
 
-        <div className="ds-fm-section-label">My Documents</div>
-        {documentChildren.map((item) => (
-          <NavCard
-            key={item.to}
-            to={item.to}
-            label={item.label}
-            icon={<IconFolderFile size={21} light />}
+        <button
+          type="button"
+          className={`ds-fm-nav-card ds-fm-nav-toggle${onDocuments ? " active" : ""}`}
+          onClick={() => setDocumentsOpen((open) => !open)}
+          aria-expanded={documentsOpen}
+        >
+          <IconFolder open={documentsOpen || onDocuments} size={21} light />
+          <span>My Documents</span>
+          <ChevronDown
+            size={15}
+            className={`ds-fm-toggle-caret${documentsOpen ? " open" : ""}`}
           />
-        ))}
+        </button>
+
+        {documentsOpen && (
+          <div className="ds-fm-subnav">
+            {documentChildren.map((item) => (
+              <NavCard
+                key={item.to}
+                to={item.to}
+                label={item.label}
+                icon={<IconFolderFile size={18} light />}
+              />
+            ))}
+          </div>
+        )}
 
         <NavCard
           to="/student/projects"

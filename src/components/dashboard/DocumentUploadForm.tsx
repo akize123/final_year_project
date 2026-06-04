@@ -18,6 +18,8 @@ interface DocumentUploadFormProps {
   showFileZone?: boolean;
   onSubmit: (file: File | null, values: Record<string, string>) => Promise<void>;
   submitLabel?: string;
+  /** When true, parent handles success feedback (e.g. OCR preview flow). */
+  suppressSuccessToast?: boolean;
 }
 
 export function DocumentUploadForm({
@@ -28,6 +30,7 @@ export function DocumentUploadForm({
   showFileZone = true,
   onSubmit,
   submitLabel = "Upload",
+  suppressSuccessToast = false,
 }: DocumentUploadFormProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -49,7 +52,9 @@ export function DocumentUploadForm({
     setLoading(true);
     try {
       await onSubmit(file, values);
-      toast.success("Document uploaded successfully.");
+      if (!suppressSuccessToast) {
+        toast.success("Document uploaded successfully.");
+      }
       setFile(null);
       setValues({});
       if (inputRef.current) inputRef.current.value = "";

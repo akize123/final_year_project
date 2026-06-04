@@ -62,46 +62,100 @@ export function DocumentTable({
               <th>Type</th>
               <th>Uploaded</th>
               <th>Status</th>
-              <th>Actions</th>
+              <th style={{ textAlign: "center" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {visible.map((row) => (
               <tr key={row.documentId}>
-                <td>{row.filename}</td>
+                <td>
+                  <span className="ds-doc-filename" title={row.filename}>
+                    📄 {row.filename}
+                  </span>
+                </td>
                 <td>{row.typeLabel ?? "—"}</td>
                 <td>
                   {row.uploadedAt
-                    ? new Date(row.uploadedAt).toLocaleDateString()
+                    ? new Date(row.uploadedAt).toLocaleDateString("en-GB", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })
                     : "—"}
                 </td>
                 <td>{statusBadge(row.status)}</td>
                 <td>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  <div className="ds-action-group">
                     {onPreview && (
                       <button
                         type="button"
-                        className="btn btn-primary btn-sm"
+                        className="ds-action-btn ds-action-view"
+                        title="View document (opens PDF)"
                         onClick={() => onPreview(row.documentId)}
                       >
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                          <circle cx="12" cy="12" r="3" />
+                        </svg>
                         View
                       </button>
                     )}
                     {onDownload && (
                       <button
                         type="button"
-                        className="btn btn-success btn-sm"
+                        className="ds-action-btn ds-action-download"
+                        title="Download document"
                         onClick={() => onDownload(row.documentId)}
                       >
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                          <polyline points="7 10 12 15 17 10" />
+                          <line x1="12" y1="15" x2="12" y2="3" />
+                        </svg>
                         Download
                       </button>
                     )}
                     {onDelete && (
                       <button
                         type="button"
-                        className="btn btn-danger btn-sm"
+                        className="ds-action-btn ds-action-delete"
+                        title="Delete document"
                         onClick={() => onDelete(row.documentId)}
                       >
+                        <svg
+                          width="13"
+                          height="13"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polyline points="3 6 5 6 21 6" />
+                          <path d="M19 6l-1 14H6L5 6" />
+                          <path d="M10 11v6" />
+                          <path d="M14 11v6" />
+                          <path d="M9 6V4h6v2" />
+                        </svg>
                         Delete
                       </button>
                     )}

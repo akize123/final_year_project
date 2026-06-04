@@ -4,9 +4,8 @@ import { AppLayout } from "@/components/AppLayout";
 import { mockReservations, mockProjects } from "@/data/mockData";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CalendarDays, Clock, Eye, X, Plus, BookOpen } from "lucide-react";
+import { CalendarDays, Clock, Eye, X, Plus, BookOpen, Mail, UserRound } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -28,8 +27,12 @@ const MyReservationsPage = () => {
   const [selectedBook, setSelectedBook] = useState("");
   const [resDate, setResDate] = useState("");
   const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [requesterName, setRequesterName] = useState("Jean Pierre Habimana");
+  const [requesterEmail, setRequesterEmail] = useState("student@auca.ac.rw");
+  const [purpose, setPurpose] = useState("");
+  const [notes, setNotes] = useState("");
   const [localReservations, setLocalReservations] = useState<any[]>([]);
+  const selectedMaterial = mockProjects.find(p => p.id === selectedBook);
 
   useEffect(() => {
     const saved = localStorage.getItem("auca_reservations");
@@ -52,7 +55,7 @@ const MyReservationsPage = () => {
 
   const handleReserve = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedBook || !resDate || !startTime) {
+    if (!selectedBook || !resDate || !startTime || !requesterName || !requesterEmail || !purpose) {
       toast({ title: "Error", description: "Please fill in all fields", variant: "destructive" });
       return;
     }
@@ -72,6 +75,14 @@ const MyReservationsPage = () => {
       slotStart: `${resDate}T${startTime}:00`,
       slotEnd: `${resDate}T${calculatedEndTime}:00`,
       status: "waitlisted", // Sent to moderator
+      requesterName,
+      requesterEmail,
+      purpose,
+      notes,
+      materialType: book?.type,
+      materialDepartment: book?.department,
+      materialYear: book?.year,
+      materialAuthor: book?.authors?.map((a: any) => a.name).join(", "),
       createdAt: new Date().toISOString()
     };
 
@@ -88,6 +99,8 @@ const MyReservationsPage = () => {
     setSelectedBook("");
     setResDate("");
     setStartTime("");
+    setPurpose("");
+    setNotes("");
     setActiveTab("waitlisted");
   };
 
@@ -106,19 +119,19 @@ const MyReservationsPage = () => {
       <div className="ds-page-scroll max-w-4xl mx-auto w-full">
         
         {/* Header Section */}
-        <div className="flex justify-between items-center w-full pt-2 pb-6 mb-6 border-b border-slate-200/60">
-          <h1 className="text-[22px] font-black text-[#1d3557] leading-tight tracking-tight">
+        <div className="flex justify-between items-center w-full pt-0 pb-3 mb-3 border-b border-slate-200/60">
+          <h1 className="text-[18px] font-black text-[#1d3557] leading-tight tracking-tight">
             Manage Your Reservation
           </h1>
           
           <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
             <DialogTrigger asChild>
-              <Button className="bg-[#1d3557] hover:bg-[#2c4e7d] text-[12px] font-bold shadow-md px-6 rounded-full h-10 uppercase tracking-widest">
-                <Plus className="h-4 w-4 mr-2" />
+              <Button className="bg-[#1d3557] hover:bg-[#2c4e7d] text-[11px] font-bold shadow-md px-5 rounded-full h-9 uppercase tracking-widest">
+                <Plus className="h-3.5 w-3.5 mr-2" />
                 New Reservation
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
+            <DialogContent className="sm:max-w-[560px] max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-[#1d3557]">Reserve Library Material</DialogTitle>
               </DialogHeader>
@@ -146,6 +159,29 @@ const MyReservationsPage = () => {
                     </SelectContent>
                   </Select>
                 </div>
+
+                {selectedMaterial && (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 text-left">
+                    <p className="text-[12px] font-black text-[#1d3557]">{selectedMaterial.title}</p>
+                    <div className="mt-2 grid grid-cols-2 gap-2 text-[11px] font-bold text-slate-500">
+                      <span>Type: {selectedMaterial.type}</span>
+                      <span>Year: {selectedMaterial.year}</span>
+                      <span>Department: {selectedMaterial.department}</span>
+                      <span>Slots left: {(selectedMaterial.slots?.total ?? 3) - (selectedMaterial.slots?.reserved ?? 0)}</span>
+                    </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-[11px] font-bold uppercase text-slate-500">Student Name</Label>
+                    <Input required value={requesterName} onChange={(e) => setRequesterName(e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-[11px] font-bold uppercase text-slate-500">Student Email</Label>
+                    <Input type="email" required value={requesterEmail} onChange={(e) => setRequesterEmail(e.target.value)} />
+                  </div>
+                </div>
                 
                 <div className="space-y-2">
                   <Label className="text-[11px] font-bold uppercase text-slate-500">Reservation Date</Label>
@@ -163,6 +199,26 @@ const MyReservationsPage = () => {
                   <Input type="time" required value={startTime} onChange={(e) => setStartTime(e.target.value)} />
                   <p className="text-[10px] text-slate-400 mt-1">End time will be calculated automatically.</p>
                 </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[11px] font-bold uppercase text-slate-500">Purpose</Label>
+                  <Select value={purpose} onValueChange={setPurpose}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select reservation purpose" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Research reading">Research reading</SelectItem>
+                      <SelectItem value="Final year project reference">Final year project reference</SelectItem>
+                      <SelectItem value="Course assignment">Course assignment</SelectItem>
+                      <SelectItem value="Publication review">Publication review</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label className="text-[11px] font-bold uppercase text-slate-500">Additional Notes</Label>
+                  <Input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Optional note for the moderator" />
+                </div>
                 
                 <DialogFooter className="mt-6">
                   <Button type="submit" className="w-full bg-[#1d3557] hover:bg-[#2c4e7d] font-bold">
@@ -175,12 +231,12 @@ const MyReservationsPage = () => {
         </div>
 
         {/* Centered Tabs */}
-        <div className="flex justify-center gap-2 flex-wrap mb-6">
+        <div className="flex justify-center gap-2 flex-wrap mb-4">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setActiveTab(t.id)}
-              className={`px-4 py-1.5 rounded-lg text-[13px] font-bold transition-all duration-300 flex items-center gap-2 ${
+              className={`px-3 py-1 rounded-md text-[12px] font-bold transition-all duration-300 flex items-center gap-1.5 ${
                 activeTab === t.id
                   ? "bg-[#1d3557] text-white shadow-md"
                   : "bg-white border border-slate-200 text-slate-500 hover:border-[#1d3557]/30 hover:bg-slate-50"
@@ -189,7 +245,7 @@ const MyReservationsPage = () => {
               {t.label}
               {t.count > 0 && (
                 <span
-                  className={`rounded-full px-1.5 py-0.5 text-[9px] font-bold ${activeTab === t.id ? "bg-white/20 text-white" : "bg-blue-50 text-[#1d3557]"}`}
+                  className={`rounded-full px-1.5 py-0.5 text-[8px] font-bold ${activeTab === t.id ? "bg-white/20 text-white" : "bg-blue-50 text-[#1d3557]"}`}
                 >
                   {t.count}
                 </span>
@@ -210,11 +266,13 @@ const MyReservationsPage = () => {
             {filtered.map((r) => (
               <div key={r.id} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-[#1d3557]/20 transition-all duration-300">
                 <div className="space-y-1.5 flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="outline" className={`text-[9px] font-bold uppercase tracking-widest border-transparent px-2 py-0.5 ${statusColors[r.status] || "bg-blue-50 text-[#1d3557]"}`}>
-                      {r.status}
-                    </Badge>
-                  </div>
+                  {r.status !== "active" && (
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="outline" className={`text-[9px] font-bold uppercase tracking-widest border-transparent px-2 py-0.5 ${statusColors[r.status] || "bg-blue-50 text-[#1d3557]"}`}>
+                        {r.status}
+                      </Badge>
+                    </div>
+                  )}
                   <h3 className="text-[14px] font-bold text-slate-800 leading-tight group-hover:text-[#1d3557] transition-colors truncate">{r.projectTitle}</h3>
                   <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider flex-wrap">
                     <span className="flex items-center gap-1.5">
@@ -226,6 +284,25 @@ const MyReservationsPage = () => {
                       {formatTime(r.slotStart)} – {formatTime(r.slotEnd)}
                     </span>
                   </div>
+                  {(r.requesterName || r.purpose || r.materialType) && (
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold text-slate-500">
+                      {r.requesterName && (
+                        <span className="flex items-center gap-1.5">
+                          <UserRound className="h-3 w-3" />
+                          {r.requesterName}
+                        </span>
+                      )}
+                      {r.requesterEmail && (
+                        <span className="flex items-center gap-1.5">
+                          <Mail className="h-3 w-3" />
+                          {r.requesterEmail}
+                        </span>
+                      )}
+                      {r.purpose && <span>Purpose: {r.purpose}</span>}
+                      {r.materialType && <span>{r.materialType} - {r.materialDepartment} {r.materialYear}</span>}
+                      {r.notes && <span>Note: {r.notes}</span>}
+                    </div>
+                  )}
                 </div>
                 
                 <div className="flex-shrink-0 flex gap-2">

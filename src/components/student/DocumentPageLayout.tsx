@@ -8,7 +8,8 @@ import type { UploadField } from "@/components/dashboard/DocumentUploadForm";
 
 interface DocumentPageLayoutProps {
   title: string;
-  subtitle: string;
+  subtitle?: string;
+  headerCentered?: boolean;
   rows: DocumentRow[];
   loading?: boolean;
   uploadDialogTitle: string;
@@ -23,6 +24,7 @@ interface DocumentPageLayoutProps {
 export function DocumentPageLayout({
   title,
   subtitle,
+  headerCentered = false,
   rows,
   loading,
   uploadDialogTitle,
@@ -38,20 +40,20 @@ export function DocumentPageLayout({
   const pending = rows.filter((r) => String(r.status).toUpperCase().includes("PEND")).length;
 
   return (
-    <div className="ds-page-frame">
-      <PageHeader title={title} subtitle={subtitle} />
+    <div className={`ds-page-frame${headerCentered ? " ds-documents-page" : ""}`}>
+      <PageHeader title={title} subtitle={subtitle} centered={headerCentered} />
 
       <div className="ds-kpi-grid">
-        <KpiCard label="Total" value={rows.length} />
+        <KpiCard label="Total" value={rows.length} trend={{ direction: "neutral", text: "all records" }} />
         <KpiCard label="Verified" value={verified} trend={{ direction: "up", text: "approved" }} />
         <KpiCard label="Pending" value={pending} trend={{ direction: "down", text: "review" }} />
       </div>
 
-      <DataCard label="Records">
+      <DataCard>
         <div className="ds-table-toolbar">
-          <span className="ds-text-secondary">{rows.length} document(s)</span>
-          <button type="button" className="btn btn-primary btn-sm" onClick={() => setUploadOpen(true)}>
-            Upload
+          <h3 className="ds-section-heading-inline">Records</h3>
+          <button type="button" className="ds-section-heading-inline ds-upload-link" onClick={() => setUploadOpen(true)}>
+            ↑ Upload
           </button>
         </div>
         <DocumentTable

@@ -9,17 +9,12 @@ import type { DashboardSummaryResponse } from "@/api/types";
 import {
   documentUploadsByWeek,
   documentStatusDonut,
-  attendanceTimeline,
-  attendanceComparison,
-  recentUploadsList,
 } from "@/data/student-dashboard-mock";
 import {
   Bar,
   BarChart,
   CartesianGrid,
   Cell,
-  Line,
-  LineChart,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -50,23 +45,54 @@ export const StudentDashboard = () => {
     (s, w) => s + w.academic + w.financial + w.internship + w.other,
     0,
   );
-  const avgAttendance = Math.round(
-    attendanceTimeline.reduce((s, d) => s + d.rate, 0) / attendanceTimeline.length,
-  );
 
+  const handleDocumentUploadsReport = () => {
+    const rows = documentUploadsByWeek
+      .map((week) => {
+        const total = week.academic + week.financial + week.internship + week.other;
+        return `<tr><td>${week.week}</td><td>${week.academic}</td><td>${week.financial}</td><td>${week.internship}</td><td>${week.other}</td><td>${total}</td></tr>`;
+      })
+      .join("");
+
+    const statusRows = documentStatusDonut
+      .map((status) => `<tr><td>${status.name}</td><td>${status.value}</td></tr>`)
+      .join("");
+
+    const popup = window.open("", "_blank", "width=900,height=700");
+    if (!popup) return;
+
+    popup.document.write(`<!doctype html><html><head><title>Student Document Report</title><style>body{font-family:Arial,sans-serif;color:#1d3557;padding:32px}h1{font-size:24px;margin:0 0 6px}h2{font-size:16px;margin:28px 0 10px}p{color:#475569;margin:0 0 18px}table{border-collapse:collapse;width:100%;margin-top:10px}th,td{border:1px solid #dbe3ef;padding:10px;text-align:left;font-size:13px}th{background:#1d3557;color:#fff}.metric{display:inline-block;margin:14px 0;padding:12px 16px;background:#eef4ff;border-radius:10px;font-weight:700}@media print{button{display:none}body{padding:18px}}</style></head><body><h1>Student Document Uploads Report</h1><p>${user?.name ?? "Student"} - Generated from the dashboard chart</p><div class="metric">Total uploads this period: ${totalUploads}</div><h2>Uploads by Week</h2><table><thead><tr><th>Week</th><th>Academic</th><th>Financial</th><th>Internship</th><th>Other</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table><h2>Document Status</h2><table><thead><tr><th>Status</th><th>Count</th></tr></thead><tbody>${statusRows}</tbody></table><script>window.onload=()=>setTimeout(()=>window.print(),300);</script></body></html>`);
+    popup.document.close();
+    popup.focus();
+  };
   return (
-    <div className="ds-page-scroll">
-      <PageHeader
-        title="Dashboard"
-        subtitle={user ? `Welcome back, ${user.name}` : undefined}
-      />
+    <div className="ds-page-scroll ds-dashboard-page ds-dashboard-main-page">
+      <div className="mb-8 p-6 bg-gradient-to-r from-[#152c52] to-[#2c4e7d] rounded-2xl shadow-lg relative overflow-hidden">
+        {/* Decorative background elements */}
+        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-white/10 blur-2xl"></div>
+        <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-32 h-32 rounded-full bg-blue-400/20 blur-xl"></div>
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Welcome back, {user?.name || "Student"}
+            </h1>
+            <p className="mt-2 text-blue-100/90 font-medium text-sm sm:text-base">
+              Here is what's happening with your academic progress today.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm">
+            <span>Student Dashboard</span>
+          </div>
+        </div>
+      </div>
 
       <div className="ds-dashboard-grid">
-        <DataCard label="Document Uploads" viewReportHref="/student/documents/academic">
+        <DataCard label="Document Uploads" viewReportLabel="View Report" onViewReport={handleDocumentUploadsReport} className="ds-card-compact">
           <p className="ds-kpi-label" style={{ margin: 0 }}>Total this period</p>
           <p className="ds-chart-metric">{totalUploads}</p>
           <p className="ds-kpi-trend up" style={{ marginBottom: 12 }}>
-            Gåæ 12% vs last month
+            + 12% vs last month
           </p>
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={documentUploadsByWeek} barGap={4}>
@@ -90,7 +116,7 @@ export const StudentDashboard = () => {
           </div>
         </DataCard>
 
-        <DataCard label="Document Status">
+        <DataCard label="Document Status" className="ds-card-compact">
           <p className="ds-kpi-label" style={{ margin: 0 }}>Completion rate</p>
           <p className="ds-chart-metric">{academicRate}%</p>
           <ResponsiveContainer width="100%" height={200}>
@@ -122,128 +148,11 @@ export const StudentDashboard = () => {
           </div>
         </DataCard>
       </div>
-
-      <div className="ds-dashboard-grid-bottom">
-        <DataCard label="Attendance Timeline" viewReportHref="/student/schedule">
-          <p className="ds-kpi-label" style={{ margin: 0 }}>Weekly rate</p>
-          <p className="ds-chart-metric">{avgAttendance}%</p>
-          <p className="ds-kpi-trend up" style={{ marginBottom: 8 }}>Gåæ 3% vs last week</p>
-          <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={attendanceTimeline}>
-              <CartesianGrid stroke={CHART_GRID} vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: CHART_AXIS }} />
-              <YAxis domain={[60, 100]} tick={{ fontSize: 10, fill: CHART_AXIS }} unit="%" />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="rate"
-                stroke={CHART_PRIMARY}
-                strokeWidth={2}
-                dot={{ fill: CHART_PRIMARY, r: 3 }}
-                name="Attendance %"
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </DataCard>
-
-        <DataCard label="Attendance vs Previous">
-          <p className="ds-kpi-label" style={{ margin: 0 }}>Sessions tracked</p>
-          <p className="ds-chart-metric">{attendanceTimeline.length * 2}</p>
-          <ResponsiveContainer width="100%" height={160}>
-            <LineChart data={attendanceComparison}>
-              <CartesianGrid stroke={CHART_GRID} vertical={false} />
-              <XAxis dataKey="date" tick={{ fontSize: 10, fill: CHART_AXIS }} />
-              <YAxis domain={[60, 100]} tick={{ fontSize: 10, fill: CHART_AXIS }} />
-              <Tooltip />
-              <Line
-                type="monotone"
-                dataKey="current"
-                stroke={CHART_PRIMARY}
-                strokeWidth={2}
-                name="Current"
-                dot={false}
-              />
-              <Line
-                type="monotone"
-                dataKey="previous"
-                stroke={CHART_SECONDARY}
-                strokeWidth={1}
-                strokeDasharray="4 4"
-                name="Previous"
-                dot={false}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </DataCard>
-
-        <DataCard label="Recent Uploads">
-          <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-            {recentUploadsList.map((item) => (
-              <li
-                key={item.name}
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "12px 0",
-                  borderBottom: "1px solid #E8EAF2",
-                }}
-              >
-                <div>
-                  <p className="ds-body-text" style={{ fontWeight: 600, margin: 0 }}>
-                    {item.name}
-                  </p>
-                  <p className="ds-text-secondary" style={{ margin: "2px 0 0" }}>
-                    {item.category} -+ {item.date}
-                  </p>
-                </div>
-                <span
-                  className={`ds-badge ${
-                    item.status === "Verified" ? "ds-badge-success" : "ds-badge-warning"
-                  }`}
-                >
-                  {item.status}
-                </span>
-              </li>
-            ))}
-          </ul>
-        </DataCard>
+      <div className="ds-dashboard-actions">
+        <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate("/student/dashboard-more")}>
+          View More
+        </button>
       </div>
-
-      <DataCard label="Quick Access">
-        <div className="ds-table-wrap">
-          <table className="ds-table">
-            <thead>
-              <tr>
-                <th>Area</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[
-                ["Academic Documents", "/student/documents/academic"],
-                ["Certificates", "/student/documents/certificates"],
-                ["Personal Projects", "/student/projects"],
-                ["Schedule & Attendance", "/student/schedule"],
-                ["Final Year Project", "/student/documents/final-year-project"],
-              ].map(([label, path]) => (
-                <tr key={path}>
-                  <td>{label}</td>
-                  <td>
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-sm"
-                      onClick={() => navigate(path)}
-                    >
-                      Open
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </DataCard>
     </div>
   );
 };

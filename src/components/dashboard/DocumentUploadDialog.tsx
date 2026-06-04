@@ -10,6 +10,7 @@ interface DocumentUploadDialogProps {
   fileRequired?: boolean;
   showFileZone?: boolean;
   submitLabel?: string;
+  suppressSuccessToast?: boolean;
   onSubmit: (file: File | null, values: Record<string, string>) => Promise<void>;
 }
 
@@ -22,6 +23,7 @@ export function DocumentUploadDialog({
   fileRequired = true,
   showFileZone = true,
   submitLabel,
+  suppressSuccessToast,
   onSubmit,
 }: DocumentUploadDialogProps) {
   if (!open) return null;
@@ -50,6 +52,7 @@ export function DocumentUploadDialog({
           fileRequired={fileRequired}
           showFileZone={showFileZone}
           submitLabel={submitLabel}
+          suppressSuccessToast={suppressSuccessToast}
           onSubmit={async (file, values) => {
             await onSubmit(file, values);
             onClose();
