@@ -25,6 +25,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Plus, Upload } from "lucide-react";
 
 import { validateDocument } from "@/lib/document-scanner";
 
@@ -39,16 +40,20 @@ export default function StudentSchedulePage() {
   const [blockOpen, setBlockOpen] = useState(false);
   const [ocrProcessing, setOcrProcessing] = useState(false);
   const [previewSlots, setPreviewSlots] = useState<TimetableSlot[] | null>(null);
+  const [gridPreview, setGridPreview] = useState<TimetableSlot[] | null>(null);
   const [hasImported, setHasImported] = useState(hasImportedTimetable);
   const [selectedColor, setSelectedColor] = useState(TIMETABLE_COLOR_PRESETS[0].hex);
+
+  const displaySlots = gridPreview ?? slots;
+  const isPreviewingOnGrid = gridPreview !== null;
 
   const slotsByDay = useMemo(() => {
     const map: Record<string, TimetableSlot[]> = {};
     DAYS.forEach((d) => {
-      map[d] = slots.filter((s) => s.day === d);
+      map[d] = displaySlots.filter((s) => s.day === d);
     });
     return map;
-  }, [slots]);
+  }, [displaySlots]);
 
   const sortedPreviewSlots = useMemo(() => {
     if (!previewSlots) return [];
@@ -71,6 +76,7 @@ export default function StudentSchedulePage() {
       throw new Error(validation.error);
     }
 
+    setGridPreview(null);
     setOcrProcessing(true);
     await new Promise<void>((resolve) => {
       setTimeout(() => {
@@ -91,36 +97,93 @@ export default function StudentSchedulePage() {
     setPreviewSlots(null);
   };
 
-  const confirmMerge = () => {
-    if (!previewSlots) return;
-    const merged = [
-      ...slots,
-      ...previewSlots.filter((o) => !slots.some((s) => s.id === o.id)),
-    ];
-    setSlots(merged);
-    saveTimetable(merged);
+  const mergeSlots = (base: TimetableSlot[], incoming: TimetableSlot[]) => [
+    ...base,
+    ...incoming.filter((o) => !base.some((s) => s.id === o.id)),
+  ];
+
+  const applyIncomingToSaved = (incoming: TimetableSlot[], mode: "merge" | "replace") => {
+    const next = mode === "merge" ? mergeSlots(slots, incoming) : incoming;
+    setSlots(next);
+    saveTimetable(next);
+    setGridPreview(null);
     setPreviewSlots(null);
     finishImport();
-    toast.success("Timetable merged successfully.");
+    toast.success(
+      mode === "merge"
+        ? "Imported classes merged into your timetable."
+        : hasImported
+          ? "Your timetable has been updated."
+          : "Timetable saved as your weekly schedule.",
+    );
+  };
+
+  const viewOnGrid = (incoming: TimetableSlot[]) => {
+    setGridPreview([...incoming]);
+    setPreviewSlots(null);
+    toast.info("Preview mode — your saved timetable is unchanged until you apply the import.");
+  };
+
+  const discardGridPreview = () => {
+    setGridPreview(null);
+    toast.message("Back to your saved timetable.");
+  };
+
+  const confirmMerge = () => {
+    if (!previewSlots) return;
+    applyIncomingToSaved(previewSlots, "merge");
   };
 
   const confirmReplace = () => {
     if (!previewSlots) return;
-    setSlots(previewSlots);
-    saveTimetable(previewSlots);
-    setPreviewSlots(null);
-    finishImport();
-    toast.success("Timetable replaced successfully.");
+    applyIncomingToSaved(previewSlots, "replace");
+  };
+
+  const removeSlot = (slotId: string) => {
+    if (isPreviewingOnGrid && gridPreview) {
+      setGridPreview(gridPreview.filter((s) => s.id !== slotId));
+      return;
+    }
+    const next = slots.filter((s) => s.id !== slotId);
+    setSlots(next);
+    saveTimetable(next);
   };
 
   if (!user) return null;
 
+  const importIsPrimary = !hasImported;
+  const importBtnClass = importIsPrimary
+    ? "ds-schedule-btn-primary"
+    : "ds-schedule-btn-outline";
+  const addBlockBtnClass = importIsPrimary
+    ? "ds-schedule-btn-outline"
+    : "ds-schedule-btn-primary";
+
   return (
     <div className="ds-page-scroll ds-schedule-page">
-      <div className="ds-tab-bar ds-schedule-tab-bar">
-        <button type="button" className="ds-tab-btn" onClick={() => setBlockOpen(true)}>
-          Add Time Block
-        </button>
+      <div className="ds-schedule-toolbar">
+        <div className="ds-schedule-toolbar-info">
+          <h2 className="ds-schedule-toolbar-title">Weekly Timetable</h2>
+          <p className="ds-schedule-toolbar-sub">Import your schedule or add personal time blocks</p>
+        </div>
+        <div className="ds-schedule-toolbar-actions">
+          <button
+            type="button"
+            className={`ds-schedule-btn ds-schedule-btn-with-icon ${importBtnClass}`}
+            onClick={() => setOcrOpen(true)}
+          >
+            <Upload size={16} strokeWidth={2.25} aria-hidden />
+            {hasImported ? "Update timetable" : "Import timetable"}
+          </button>
+          <button
+            type="button"
+            className={`ds-schedule-btn ds-schedule-btn-with-icon ${addBlockBtnClass}`}
+            onClick={() => setBlockOpen(true)}
+          >
+            <Plus size={16} strokeWidth={2.25} aria-hidden />
+            Add Time Block
+          </button>
+        </div>
       </div>
 
       {ocrProcessing && (
@@ -128,19 +191,59 @@ export default function StudentSchedulePage() {
           Extracting schedule from image…
         </p>
       )}
-      <DataCard
-        label="Weekly Timetable"
-        headerAction={
-          <button
-            type="button"
-            className={`ds-tab-btn${hasImported ? " ds-tab-btn-muted" : ""}`}
-            onClick={() => setOcrOpen(true)}
-          >
-            {hasImported ? "Update schedule" : "Import timetable"}
-          </button>
-        }
-      >
-        <div className="ds-timetable-scroll">
+
+      {isPreviewingOnGrid && (
+        <div className="ds-schedule-preview-banner" role="status">
+          <div className="ds-schedule-preview-banner-text">
+            <strong>Previewing imported timetable</strong>
+            <span>Your saved schedule is unchanged until you apply or merge below.</span>
+          </div>
+          <div className="ds-schedule-preview-banner-actions">
+            <button
+              type="button"
+              className="ds-schedule-btn ds-schedule-btn-primary"
+              onClick={() => gridPreview && applyIncomingToSaved(gridPreview, "replace")}
+            >
+              {hasImported ? "Update my timetable" : "Use as my timetable"}
+            </button>
+            <button
+              type="button"
+              className="ds-schedule-btn ds-schedule-btn-outline"
+              onClick={() => gridPreview && applyIncomingToSaved(gridPreview, "merge")}
+            >
+              Merge with saved
+            </button>
+            <button
+              type="button"
+              className="ds-schedule-btn ds-schedule-btn-outline"
+              onClick={discardGridPreview}
+            >
+              Back to saved
+            </button>
+          </div>
+        </div>
+      )}
+
+      <DataCard>
+        {!hasImported && !isPreviewingOnGrid && (
+          <div className="ds-timetable-onboarding">
+            <p className="ds-timetable-onboarding-title">No timetable imported yet</p>
+            <p className="ds-text-secondary" style={{ margin: "0 0 14px", fontSize: 13 }}>
+              Upload your official schedule to fill the grid, or add blocks manually.
+            </p>
+            <button
+              type="button"
+              className="ds-schedule-btn ds-schedule-btn-primary ds-schedule-btn-with-icon"
+              onClick={() => setOcrOpen(true)}
+            >
+              <Upload size={16} strokeWidth={2.25} aria-hidden />
+              Import timetable
+            </button>
+          </div>
+        )}
+        <div
+          className={`ds-timetable-scroll${isPreviewingOnGrid ? " ds-timetable-scroll-preview" : ""}`}
+        >
           <div className="ds-timetable-grid ds-timetable-compact">
             <div className="ds-tt-head" />
             {DAYS.map((d) => (
@@ -165,9 +268,7 @@ export default function StudentSchedulePage() {
                           title="Click to remove"
                           onClick={() => {
                             if (!confirm(`Remove "${slot.title}"?`)) return;
-                            const next = slots.filter((s) => s.id !== slot.id);
-                            setSlots(next);
-                            saveTimetable(next);
+                            removeSlot(slot.id);
                           }}
                           onKeyDown={() => {}}
                         >
@@ -184,11 +285,13 @@ export default function StudentSchedulePage() {
             ))}
           </div>
         </div>
-        {hasImported && (
-          <p className="ds-text-secondary" style={{ marginTop: 12, fontSize: 13 }}>
-            Click a block to remove it, or use <strong>Add Time Block</strong> for personal sessions.
-          </p>
-        )}
+        <p className="ds-text-secondary" style={{ marginTop: 12, fontSize: 13 }}>
+          {isPreviewingOnGrid
+            ? "Preview only — apply or discard using the banner above."
+            : hasImported
+              ? "Click a block to remove it, or use Add Time Block for personal sessions."
+              : "Sample classes shown until you import your official timetable."}
+        </p>
       </DataCard>
 
       <DocumentUploadDialog
@@ -196,7 +299,7 @@ export default function StudentSchedulePage() {
         onClose={() => setOcrOpen(false)}
         title={hasImported ? "Update timetable" : "Import timetable"}
         fields={[]}
-        submitLabel="Extract with OCR"
+        submitLabel="Scan & preview"
         suppressSuccessToast
         onSubmit={async (file) => applyOcr(file)}
       />
@@ -207,8 +310,8 @@ export default function StudentSchedulePage() {
             <DialogTitle>Review extracted timetable</DialogTitle>
             <DialogDescription>
               {sortedPreviewSlots.length} class
-              {sortedPreviewSlots.length === 1 ? "" : "es"} found. Merge with your current schedule
-              or replace it entirely.
+              {sortedPreviewSlots.length === 1 ? "" : "es"} found. View on the calendar without
+              saving, merge with your current schedule, or replace it entirely.
             </DialogDescription>
           </DialogHeader>
           <div className="ds-table-wrap" style={{ maxHeight: 280, overflowY: "auto" }}>
@@ -239,11 +342,18 @@ export default function StudentSchedulePage() {
             <Button type="button" variant="outline" onClick={cancelPreview}>
               Cancel
             </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => previewSlots && viewOnGrid(previewSlots)}
+            >
+              View on timetable
+            </Button>
             <Button type="button" variant="secondary" onClick={confirmMerge}>
-              Merge with current
+              Merge with saved
             </Button>
             <Button type="button" onClick={confirmReplace}>
-              Replace all
+              {hasImported ? "Update my timetable" : "Use as my timetable"}
             </Button>
           </DialogFooter>
         </DialogContent>

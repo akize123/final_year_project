@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { PageHeader } from "@/components/dashboard/PageHeader";
 import { DataCard } from "@/components/dashboard/DataCard";
 import { getDashboardSummary } from "@/api/student/dashboard";
 import { getAuthToken } from "@/lib/auth-token";
@@ -67,25 +66,21 @@ export const StudentDashboard = () => {
   };
   return (
     <div className="ds-page-scroll ds-dashboard-page ds-dashboard-main-page">
-      <div className="mb-8 p-6 bg-gradient-to-r from-[#152c52] to-[#2c4e7d] rounded-2xl shadow-lg relative overflow-hidden">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 rounded-full bg-white/10 blur-2xl"></div>
-        <div className="absolute bottom-0 left-0 -ml-8 -mb-8 w-32 h-32 rounded-full bg-blue-400/20 blur-xl"></div>
-        
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-              Welcome back, {user?.name || "Student"}
-            </h1>
-            <p className="mt-2 text-blue-100/90 font-medium text-sm sm:text-base">
-              Here is what's happening with your academic progress today.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-2 rounded-xl text-white text-sm font-semibold shadow-sm">
-            <span>Student Dashboard</span>
+      <section className="ds-student-welcome">
+        <div className="ds-student-welcome-inner">
+          <span className="ds-student-welcome-badge">Student Portal</span>
+          <div className="ds-student-welcome-panel">
+            <div className="ds-student-welcome-chip">
+              <span className="ds-student-welcome-chip-label">Completion</span>
+              <span className="ds-student-welcome-chip-value">{academicRate}%</span>
+            </div>
+            <div className="ds-student-welcome-chip">
+              <span className="ds-student-welcome-chip-label">Uploads</span>
+              <span className="ds-student-welcome-chip-value">{totalUploads}</span>
+            </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <div className="ds-dashboard-grid">
         <DataCard label="Document Uploads" viewReportLabel="View Report" onViewReport={handleDocumentUploadsReport} className="ds-card-compact">

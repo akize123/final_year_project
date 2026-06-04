@@ -65,6 +65,7 @@ export const mockPersonalProjects: Array<{
     title: "Budget Tracker API",
     description: "REST API for student expense tracking with monthly reports.",
     tech: "Spring Boot, PostgreSQL",
+    link: "https://github.com/example/budget-tracker-api",
     updatedAt: "2026-04-22",
   },
 ];

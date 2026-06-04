@@ -11,6 +11,9 @@ export function createFyp(body: {
   keywords?: string;
   department?: string;
   projectType?: string;
+  projectCategory?: string;
+  supervisorName?: string;
+  researchArea?: string;
   academicYear?: string;
 }) {
   return apiRequest<FypResponse>("/api/v1/student/fyp", {

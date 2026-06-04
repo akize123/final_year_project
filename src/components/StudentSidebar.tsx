@@ -1,5 +1,4 @@
-import { useState, type ReactNode } from "react";
-import { ChevronDown } from "lucide-react";
+import type { ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   IconArchive,
@@ -47,7 +46,6 @@ function NavCard({
 export function StudentSidebar() {
   const location = useLocation();
   const onDocuments = location.pathname.startsWith("/student/documents");
-  const [documentsOpen, setDocumentsOpen] = useState(onDocuments);
   const onSchedule = location.pathname === "/student/schedule";
 
   return (
@@ -74,32 +72,21 @@ export function StudentSidebar() {
           icon={<IconCalendar size={21} light />}
         />
 
-        <button
-          type="button"
-          className={`ds-fm-nav-card ds-fm-nav-toggle${onDocuments ? " active" : ""}`}
-          onClick={() => setDocumentsOpen((open) => !open)}
-          aria-expanded={documentsOpen}
-        >
-          <IconFolder open={documentsOpen || onDocuments} size={21} light />
+        <div className={`ds-fm-nav-card ds-fm-nav-toggle${onDocuments ? " active" : ""}`}>
+          <IconFolder open={onDocuments} size={21} light />
           <span>My Documents</span>
-          <ChevronDown
-            size={15}
-            className={`ds-fm-toggle-caret${documentsOpen ? " open" : ""}`}
-          />
-        </button>
+        </div>
 
-        {documentsOpen && (
-          <div className="ds-fm-subnav">
-            {documentChildren.map((item) => (
-              <NavCard
-                key={item.to}
-                to={item.to}
-                label={item.label}
-                icon={<IconFolderFile size={18} light />}
-              />
-            ))}
-          </div>
-        )}
+        <div className="ds-fm-subnav">
+          {documentChildren.map((item) => (
+            <NavCard
+              key={item.to}
+              to={item.to}
+              label={item.label}
+              icon={<IconFolderFile size={18} light />}
+            />
+          ))}
+        </div>
 
         <NavCard
           to="/student/projects"

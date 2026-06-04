@@ -67,16 +67,16 @@ const LoginPage = () => {
           animate="visible"
           variants={staggerContainer}
         >
-          <motion.div variants={fadeInUp} className="flex flex-col items-center">
-            <div className="h-20 w-20 rounded-full border border-slate-100 bg-white shadow-sm flex items-center justify-center p-2 mb-6">
-              <img
-                src="/auca_logo1.png"
-                alt="AUCA Logo"
-                className="h-full w-full object-contain"
-              />
+          <motion.div variants={fadeInUp} className="space-y-5 pt-4">
+            <img
+              src="/auca_logo1.png"
+              alt="AUCA Logo"
+              className="h-20 w-auto max-w-[220px] object-contain object-left sm:h-24"
+            />
+            <div>
+              <h1 className="text-3xl font-extrabold tracking-tight text-[#152c52] sm:text-4xl">{t("Welcome Back")}</h1>
+              <p className="mt-2 text-sm font-medium text-slate-500">Sign in to access the Academic Hub</p>
             </div>
-            <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight text-center">{t("Welcome Back")}</h1>
-            <p className="text-slate-500 mt-2 text-sm font-medium text-center">Sign in to access the Academic Hub</p>
           </motion.div>
 
           <motion.form variants={fadeInUp} onSubmit={handleSubmit} className="space-y-6">
@@ -149,19 +149,6 @@ const LoginPage = () => {
         {/* Soft glowing orb on top of image */}
         <div className="absolute top-[20%] right-[20%] w-[500px] h-[500px] bg-blue-400/30 blur-[120px] rounded-full z-20 pointer-events-none mix-blend-screen" />
         
-        {/* Glassmorphic overlay card describing the portal */}
-        <motion.div 
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-          className="absolute bottom-16 left-16 right-16 z-30 rounded-3xl border border-white/20 bg-white/10 p-8 backdrop-blur-xl shadow-2xl"
-        >
-          <h2 className="text-3xl font-extrabold text-white mb-3">Academic Excellence</h2>
-          <p className="text-white/80 font-medium text-lg leading-relaxed max-w-xl">
-            A secure gateway to manage your research, submit projects, and access the institutional archive. Built exclusively for the AUCA community.
-          </p>
-        </motion.div>
-
         {/* The existing image */}
         <img
           src="/images/auca1.jpg"

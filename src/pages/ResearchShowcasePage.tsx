@@ -1,13 +1,10 @@
 import { useState } from "react";
-import { AppLayout } from "@/components/AppLayout";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { 
-  Search, BookOpen, GraduationCap, Award, ExternalLink, 
-  Download, Filter, Share2, Sparkles, TrendingUp, Mail
-} from "lucide-react";
+import { mockProjects } from "@/data/mockData";
+import { ExternalLink, Filter, Share2, TrendingUp } from "lucide-react";
 
 /* ─── Mock Research Data (AUCA Specific) ─── */
 const AUCA_FACULTIES = [
@@ -18,54 +15,24 @@ const AUCA_FACULTIES = [
   "Education",
 ];
 
-const featuredProjects = [
-  {
-    id: "rp1",
-    title: "AI-Driven Crop Disease Prediction for Rwandan Farmers",
-    student: "Emmanuel Kwizera",
-    supervisor: "Dr. Sarah Mugisha",
-    department: "Information Technology",
-    year: "2024",
-    grade: "A+",
-    tags: ["Machine Learning", "Agriculture", "Mobile Development"],
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop&q=60",
-    abstract: "A deep learning model trained on local potato and maize crops to identify early-stage blight using smartphone cameras, achieving 94% accuracy in field tests.",
-  },
-  {
-    id: "rp2",
-    title: "Blockchain Framework for Secure Academic Credentialing",
-    student: "Fiona Umutoni",
-    supervisor: "Prof. Agnes Ntamwiza",
-    department: "Information Technology",
-    year: "2024",
-    grade: "A",
-    tags: ["Blockchain", "Security", "Web3"],
-    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=800&auto=format&fit=crop&q=60",
-    abstract: "Implementing an Ethereum-based private ledger for AUCA transcripts to eliminate document forgery and automate credential verification.",
-  },
-  {
-    id: "biz1",
-    title: "Impact of Mobile Money on Small Scale Business Growth in Kigali",
-    student: "Jean Luc Ndayisaba",
-    supervisor: "Dr. Paul Mutara",
-    department: "Business Administration",
-    year: "2024",
-    grade: "A",
-    tags: ["FinTech", "Economy", "SMEs"],
-    image: "https://images.unsplash.com/photo-1556742044-3c52d6e88c62?w=800&auto=format&fit=crop&q=60",
-    abstract: "An empirical study on how digital payment systems have increased the turnover of small-scale retail businesses in urban Rwanda.",
-  },
-];
+const archiveProjects = mockProjects.slice(0, 6).map((project) => ({
+  ...project,
+  image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=60",
+  grade: project.type === "Publication" ? "Published" : project.availability,
+  tags: project.keywords.slice(0, 3),
+}));
 
 const ResearchShowcasePage = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDept, setSelectedDept] = useState("All Departments");
 
-  const filteredProjects = featuredProjects.filter(p => {
-    const matchesSearch = p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         p.student.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         p.tags.some(t => t.toLowerCase().includes(searchQuery.toLowerCase()));
-    const matchesDept = selectedDept === "All Departments" || p.department === selectedDept;
+  const filteredProjects = archiveProjects.filter((project) => {
+    const matchesSearch =
+      project.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.authors.some((author) => author.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      project.keywords.some((keyword) => keyword.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesDept = selectedDept === "All Departments" || project.department === selectedDept;
     return matchesSearch && matchesDept;
   });
 
@@ -94,7 +61,11 @@ const ResearchShowcasePage = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {filteredProjects.map((project) => (
             <Card key={project.id} className="group border-border shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden flex flex-col text-xs">
-              <div className="h-32 overflow-hidden relative">
+              <button
+                type="button"
+                onClick={() => navigate(`/projects/${project.id}`)}
+                className="h-32 overflow-hidden relative text-left w-full"
+              >
                 <img 
                   src={project.image} 
                   alt={project.title} 
@@ -104,11 +75,17 @@ const ResearchShowcasePage = () => {
                 <Badge className="absolute top-3 right-3 bg-emerald-500 text-white border-0 px-2 py-0.5 text-[9px] font-semibold">
                   {project.grade}
                 </Badge>
-              </div>
+              </button>
               
               <CardHeader className="pb-2 pt-2 px-3">
                 <CardTitle className="text-sm font-heading font-bold leading-snug group-hover:text-[#1d3557] transition-colors">
-                  {project.title}
+                  <button
+                    type="button"
+                    onClick={() => navigate(`/projects/${project.id}`)}
+                    className="text-left hover:underline underline-offset-2"
+                  >
+                    {project.title}
+                  </button>
                 </CardTitle>
               </CardHeader>
               
@@ -130,10 +107,16 @@ const ResearchShowcasePage = () => {
                   <TrendingUp className="h-3 w-3" /> 1.2k
                 </div>
                 <div className="flex items-center gap-1">
-                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0">
+                  <Button variant="ghost" size="sm" className="h-7 w-7 p-0" type="button" aria-label="Share project">
                     <Share2 className="h-3.5 w-3.5" />
                   </Button>
-                  <Button variant="outline" size="sm" className="h-7 gap-1 px-2 text-[9px] font-semibold border-[#1d3557] text-[#1d3557] hover:bg-[#1d3557] hover:text-white">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    type="button"
+                    onClick={() => navigate(`/projects/${project.id}`)}
+                    className="h-7 gap-1 px-2 text-[9px] font-semibold border-[#1d3557] text-[#1d3557] hover:bg-[#1d3557] hover:text-white"
+                  >
                     READ <ExternalLink className="h-3 w-3" />
                   </Button>
                 </div>

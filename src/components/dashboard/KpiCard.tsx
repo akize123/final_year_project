@@ -3,11 +3,12 @@ interface KpiCardProps {
   value: string | number;
   trend?: { direction: "up" | "down" | "neutral"; text: string };
   subLabel?: string;
+  compact?: boolean;
 }
 
-export function KpiCard({ label, value, trend, subLabel }: KpiCardProps) {
+export function KpiCard({ label, value, trend, subLabel, compact }: KpiCardProps) {
   return (
-    <div className="ds-kpi-card">
+    <div className={`ds-kpi-card${compact ? " compact" : ""}`}>
       <div className="ds-kpi-label">{label}</div>
       <div className="ds-kpi-value">{value}</div>
       {trend ? (

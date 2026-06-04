@@ -14,7 +14,20 @@ type Project = (typeof mockPersonalProjects)[0];
 function loadProjects(): Project[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const saved = JSON.parse(raw) as Project[];
+      return saved.map((project) => {
+        const fallback = mockPersonalProjects.find(
+          (item) => item.id === project.id || item.title === project.title,
+        );
+
+        return {
+          ...fallback,
+          ...project,
+          link: project.link || fallback?.link,
+        } as Project;
+      });
+    }
   } catch {
     /* ignore */
   }
@@ -38,9 +51,10 @@ export default function StudentProjectsPage() {
       <PageHeader
         title="Personal Projects"
         subtitle="Portfolio projects outside your final year submission"
+        centered
       />
 
-      <DataCard label="Your Projects">
+      <DataCard label="Your Projects" className="ds-personal-projects-card">
         <div className="ds-table-toolbar">
           <span className="ds-text-secondary">{projects.length} project(s)</span>
           <button type="button" className="btn btn-primary btn-sm" onClick={() => setUploadOpen(true)}>
@@ -72,18 +86,20 @@ export default function StudentProjectsPage() {
                     <td>{p.tech}</td>
                     <td>{p.updatedAt}</td>
                     <td>
-                      {p.link && (
-                        <a href={p.link} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm" style={{ marginRight: 8 }}>
-                          View
-                        </a>
-                      )}
-                      <button
+                      <div className="ds-project-actions">
+                        {p.link && (
+                          <a href={p.link} target="_blank" rel="noreferrer" className="btn btn-primary btn-sm" style={{ marginRight: 8 }}>
+                            View
+                          </a>
+                        )}
+                        <button
                         type="button"
                         className="btn btn-danger btn-sm"
                         onClick={() => persist(projects.filter((x) => x.id !== p.id))}
-                      >
-                        Remove
-                      </button>
+                        >
+                          Remove
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

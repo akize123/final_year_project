@@ -10,9 +10,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { 
   CheckCircle, X, Eye, RefreshCw, Copy, Archive, ChevronDown, 
   ChevronUp, MessageSquare, ShieldCheck, UserCheck, AlertTriangle,
-  History, FileText, Send, Globe, Info, ChevronRight
+  History, FileText, Send, Globe, Info, ChevronRight, Sparkles
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { pushNotification } from "@/lib/notifications";
 
 /* ─── Advanced Mock Data for Librarian ─── */
 interface ModerationItem {
@@ -74,16 +75,98 @@ const mockModerationQueue: ModerationItem[] = [
   },
 ];
 
+function getStudentUserId(projectId: string): string {
+  if (projectId.startsWith("fyp-")) return "u1";
+  if (projectId === "sub1") return "u1";
+  if (projectId === "sub2") return "u5";
+  if (projectId === "sub3") return "u6";
+  return "u1";
+}
+
+function getFypQueueItems(): ModerationItem[] {
+  try {
+    const raw = localStorage.getItem("auca_student_fyp_projects");
+    if (!raw) return [];
+    const projects = JSON.parse(raw);
+    if (!Array.isArray(projects)) return [];
+    
+    const profileRaw = localStorage.getItem("auca_student_fyp_profile");
+    let authorName = "Jean Pierre Habimana";
+    if (profileRaw) {
+      try {
+        const p = JSON.parse(profileRaw);
+        if (p.fullName) authorName = p.fullName;
+      } catch {}
+    }
+
+    return projects
+      .filter((p: any) => p.status && p.status !== "DRAFT")
+      .map((p: any) => {
+        let status: ModerationItem["status"] = "Pending";
+        if (p.status === "SUBMITTED") status = "Pending";
+        else if (p.status === "Published" || p.status === "APPROVED") status = "Published";
+        else if (p.status === "REJECTED" || p.status === "Correction Requested") status = "Rejected";
+
+        return {
+          id: p.id,
+          title: p.title,
+          author: authorName,
+          department: p.department || "Information Technology",
+          type: "Student Project",
+          status,
+          assignedTo: "Alice Librarian",
+          submittedDate: p.createdAt ? p.createdAt.slice(0, 10) : new Date().toISOString().slice(0, 10),
+          workflowStep: 3,
+          plagiarismScore: 12,
+          comments: p.comments || [],
+          recommended: !!p.recommended
+        } as ModerationItem & { recommended?: boolean };
+      });
+  } catch {
+    return [];
+  }
+}
+
+const updateLocalFypProject = (
+  projectId: string,
+  updates: {
+    status?: string;
+    comments?: any[];
+    recommended?: boolean;
+  }
+) => {
+  try {
+    const raw = localStorage.getItem("auca_student_fyp_projects");
+    if (!raw) return;
+    const projects = JSON.parse(raw);
+    if (!Array.isArray(projects)) return;
+    const index = projects.findIndex((p: any) => p.id === projectId);
+    if (index >= 0) {
+      projects[index] = { ...projects[index], ...updates };
+      localStorage.setItem("auca_student_fyp_projects", JSON.stringify(projects));
+      window.dispatchEvent(new Event("storage"));
+    }
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 const ModerationPage = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [queueItems, setQueueItems] = useState<ModerationItem[]>(mockModerationQueue);
+  const [queueItems, setQueueItems] = useState<ModerationItem[]>([]);
   const [view, setView] = useState<"assigned" | "all">("assigned");
   const [activeTab, setActiveTab] = useState("Pending");
   const [expandedItem, setExpandedItem] = useState<string | null>(null);
   const [feedback, setFeedback] = useState("");
+
+  useEffect(() => {
+    const fypItems = getFypQueueItems();
+    const merged = [...fypItems, ...mockModerationQueue];
+    setQueueItems(merged);
+  }, []);
 
   useEffect(() => {
     if (location.pathname.endsWith("/all")) {
@@ -102,9 +185,13 @@ const ModerationPage = () => {
   });
 
   const handleAction = (id: string, action: "Published" | "Rejected" | "Request Re-Upload") => {
+    let projectTitle = "";
+    let finalComments: any[] = [];
+
     setQueueItems((current) =>
       current.map((item) => {
         if (item.id !== id) return item;
+        projectTitle = item.title;
         const newComments = [...item.comments];
         if (feedback.trim()) {
           newComments.push({
@@ -122,9 +209,11 @@ const ModerationPage = () => {
             text: "Please re-upload with missing documentation and corrected metadata.",
             date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
           });
-          return { ...item, comments: newComments };
+          finalComments = newComments;
+          return { ...item, status: "Rejected", comments: newComments };
         }
 
+        finalComments = newComments;
         return {
           ...item,
           status: action === "Published" ? "Published" : "Rejected",
@@ -132,6 +221,53 @@ const ModerationPage = () => {
         };
       })
     );
+
+    if (id.startsWith("fyp-")) {
+      const localStatus = action === "Published" ? "APPROVED" : "Correction Requested";
+      updateLocalFypProject(id, { status: localStatus, comments: finalComments });
+    }
+
+    const studentId = getStudentUserId(id);
+    
+    if (feedback.trim()) {
+      pushNotification({
+        userId: studentId,
+        type: "comment",
+        title: "New Moderator Comment",
+        body: `Alice Librarian commented on your project "${projectTitle}": "${feedback.trim()}"`,
+        fromRole: "moderator",
+        fromName: "Alice Librarian",
+      });
+    }
+
+    if (action === "Published") {
+      pushNotification({
+        userId: studentId,
+        type: "approved",
+        title: "Project Submission Approved",
+        body: `Your project "${projectTitle}" has been approved and published to the archive.`,
+        fromRole: "moderator",
+        fromName: "Alice Librarian",
+      });
+    } else if (action === "Rejected") {
+      pushNotification({
+        userId: studentId,
+        type: "rejected",
+        title: "Submission Rejected",
+        body: `Your project submission "${projectTitle}" was rejected. Please see comments.`,
+        fromRole: "moderator",
+        fromName: "Alice Librarian",
+      });
+    } else if (action === "Request Re-Upload") {
+      pushNotification({
+        userId: studentId,
+        type: "reupload",
+        title: "Correction & Re-upload Requested",
+        body: `Correction requested for "${projectTitle}". Please re-upload with requested documentation.`,
+        fromRole: "moderator",
+        fromName: "Alice Librarian",
+      });
+    }
 
     toast({
       title: action === "Request Re-Upload" ? "Re-upload requested" : `Submission ${action}`,
@@ -141,6 +277,71 @@ const ModerationPage = () => {
           : `The document has been successfully ${action.toLowerCase()}.`,
     });
     setFeedback("");
+  };
+
+  const handleRecommend = (id: string) => {
+    let projectTitle = "";
+    let isNowRecommended = false;
+
+    setQueueItems((current) =>
+      current.map((item) => {
+        if (item.id !== id) return item;
+        projectTitle = item.title;
+        isNowRecommended = !(item as any).recommended;
+        
+        const newComments = [...item.comments];
+        if (isNowRecommended) {
+          newComments.push({
+            id: `c-rec-${Date.now()}`,
+            user: "Alice Librarian",
+            text: "Recommended for display in the public AUCA Archive Research Showcase.",
+            date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+          });
+        }
+        
+        return {
+          ...item,
+          recommended: isNowRecommended,
+          comments: newComments,
+        } as any;
+      })
+    );
+
+    if (id.startsWith("fyp-")) {
+      const raw = localStorage.getItem("auca_student_fyp_projects");
+      let currentComments: any[] = [];
+      if (raw) {
+        const projects = JSON.parse(raw);
+        const p = projects.find((x: any) => x.id === id);
+        if (p) currentComments = p.comments || [];
+      }
+      
+      if (isNowRecommended) {
+        currentComments.push({
+          id: `c-rec-${Date.now()}`,
+          user: "Alice Librarian",
+          text: "Recommended for display in the public AUCA Archive Research Showcase.",
+          date: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+        });
+      }
+
+      updateLocalFypProject(id, { recommended: isNowRecommended, comments: currentComments });
+    }
+
+    const studentId = getStudentUserId(id);
+    if (isNowRecommended) {
+      pushNotification({
+        userId: studentId,
+        type: "recommendation",
+        title: "Project Nominated for Showcase",
+        body: `Congratulations! Your project "${projectTitle}" has been recommended for the Research Showcase.`,
+        fromRole: "moderator",
+        fromName: "Alice Librarian",
+      });
+      toast.success("Project recommended for Research Showcase!");
+    } else {
+      toast.message("Recommendation removed.");
+    }
   };
 
   return (
@@ -323,8 +524,18 @@ const ModerationPage = () => {
                                <Button size="sm" variant="ghost" className="text-[11px] font-bold text-slate-500 h-9 gap-2 hover:bg-slate-100" onClick={() => handleAction(item.id, "Request Re-Upload") }>
                                  <RefreshCw className="h-3.5 w-3.5" /> REQUEST RE-UPLOAD
                                </Button>
-                               <Button size="sm" variant="ghost" className="text-[11px] font-bold text-slate-500 h-9 gap-2 hover:bg-amber-50 hover:text-amber-600" onClick={() => toast({ title: "Flagged for review", description: "This item now requires additional integrity validation." }) }>
-                                 <AlertTriangle className="h-3.5 w-3.5" /> FLAG WARNING
+                               <Button 
+                                 size="sm" 
+                                 variant="ghost" 
+                                 className={`text-[11px] font-bold h-9 gap-2 ${
+                                   (item as any).recommended 
+                                   ? "text-amber-600 hover:bg-amber-50" 
+                                   : "text-slate-500 hover:bg-amber-50 hover:text-amber-600"
+                                 }`}
+                                 onClick={() => handleRecommend(item.id)}
+                               >
+                                 <Sparkles className="h-3.5 w-3.5" /> 
+                                 {(item as any).recommended ? "RECOMMENDED" : "RECOMMEND SHOWCASE"}
                                </Button>
                                <Button size="sm" variant="ghost" className="col-span-2 sm:col-span-1 text-[11px] font-bold text-[#1d3557] h-9 gap-2 ml-auto group" onClick={() => toast({ title: "View document", description: "Opening the full document viewer." }) }>
                                  <Eye className="h-3.5 w-3.5" /> VIEW FULL DOCUMENT

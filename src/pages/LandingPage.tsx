@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Menu, Mail, ArrowRight, CheckCircle2, Shield, Search, BookOpen, Users, BarChart3, Database, FileText } from "lucide-react";
+import { Menu, ArrowRight, Shield, BookOpen } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -135,21 +135,6 @@ export default function LandingPage() {
   const { scrollYProgress } = useScroll();
   const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
 
-  const heroHighlights = [
-    "Centralized research repository",
-    "Submit and track projects",
-    "Search AUCA archives fast",
-    "Protect faculty publications",
-  ];
-  const [activeHighlight, setActiveHighlight] = React.useState(0);
-
-  React.useEffect(() => {
-    const interval = window.setInterval(() => {
-      setActiveHighlight((current) => (current + 1) % heroHighlights.length);
-    }, 3200);
-    return () => window.clearInterval(interval);
-  }, []);
-
   return (
     <div id="top" className="relative min-h-screen overflow-hidden bg-slate-50 font-body text-slate-600 antialiased selection:bg-[#152c52]/10 selection:text-[#152c52]">
       {/* Background Gradients */}
@@ -257,21 +242,6 @@ export default function LandingPage() {
                 The official platform for AUCA students, lecturers, and researchers to publish, manage, and share academic work.
               </motion.p>
 
-              <motion.div variants={fadeInUp} className="relative mt-8 overflow-hidden rounded-2xl border border-slate-200/60 bg-white/60 p-1 backdrop-blur-md shadow-sm">
-                <div className="flex items-center justify-between gap-3 px-5 py-4 text-sm font-medium text-slate-600 sm:text-base bg-white rounded-xl shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)]">
-                  <span className="font-bold text-slate-900">Right now</span>
-                  <motion.span 
-                    key={activeHighlight}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="inline-flex items-center gap-2 rounded-full bg-[#152c52]/5 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#152c52]"
-                  >
-                    {heroHighlights[activeHighlight]}
-                  </motion.span>
-                </div>
-              </motion.div>
-
               <motion.div variants={fadeInUp} className="flex flex-col gap-4 pt-4 sm:flex-row sm:items-center">
                 <Button
                   size="lg"
@@ -286,7 +256,7 @@ export default function LandingPage() {
                   className="rounded-full px-8 h-14 text-base font-bold border-slate-300 text-slate-700 bg-white/50 backdrop-blur-sm hover:bg-slate-100 hover:text-slate-900 hover:-translate-y-1 transition-all"
                   asChild
                 >
-                  <a href="#features">Explore Features</a>
+                  <a href="#how-it-works">Explore Features</a>
                 </Button>
               </motion.div>
             </motion.div>
@@ -355,110 +325,6 @@ export default function LandingPage() {
                   <div className="mt-2 text-sm font-semibold uppercase tracking-wider text-slate-500">{stat.label}</div>
                 </motion.div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        {/* FEATURES GRID SECTION */}
-        <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 relative">
-          <div className="mx-auto max-w-7xl">
-            <div className="text-center max-w-3xl mx-auto mb-16">
-              <span className="inline-flex rounded-full bg-blue-50 px-4 py-1.5 text-sm font-bold text-blue-700 tracking-wide mb-4">
-                Why AUCA Connect
-              </span>
-              <h2 className="text-3xl font-extrabold text-slate-900 sm:text-4xl md:text-5xl tracking-tight">
-                Everything you need to <br className="hidden sm:block"/>manage academic research
-              </h2>
-              <p className="mt-6 text-lg text-slate-600 font-medium">
-                One unified platform for submitting, reviewing, publishing, and discovering scholarly work across AUCA's academic community.
-              </p>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6">
-              {/* Feature 1 - Large spanning 2 cols */}
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="md:col-span-2 group relative overflow-hidden rounded-[2rem] bg-white p-8 sm:p-10 shadow-lg border border-slate-100 transition-all hover:shadow-xl"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
-                <div className="relative z-10">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#152c52] text-white mb-6 shadow-md">
-                    <FileText className="h-7 w-7" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-3">Structured Publishing</h3>
-                  <p className="text-slate-600 leading-relaxed font-medium max-w-md">
-                    Submit research papers, theses, dissertations, and institutional project reports with guided metadata, rich formatting, and automated validation.
-                  </p>
-                </div>
-                <div className="absolute -right-10 -bottom-10 opacity-5 group-hover:opacity-10 transition-opacity">
-                  <FileText className="w-64 h-64" />
-                </div>
-              </motion.div>
-
-              {/* Feature 2 */}
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="group relative overflow-hidden rounded-[2rem] bg-[#152c52] p-8 sm:p-10 shadow-lg transition-all hover:shadow-xl text-white"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent" />
-                <div className="relative z-10">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 text-white mb-6 backdrop-blur-sm">
-                    <Search className="h-7 w-7" />
-                  </div>
-                  <h3 className="text-xl font-bold mb-3">Peer Discovery</h3>
-                  <p className="text-blue-100 leading-relaxed font-medium">
-                    Browse, search, and filter publications across all AUCA departments with advanced academic search tools.
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Feature 3 */}
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="group relative overflow-hidden rounded-[2rem] bg-white p-8 sm:p-10 shadow-lg border border-slate-100 transition-all hover:shadow-xl"
-              >
-                <div className="relative z-10">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-50 text-indigo-600 mb-6">
-                    <BarChart3 className="h-7 w-7" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">Impact Analytics</h3>
-                  <p className="text-slate-600 leading-relaxed font-medium">
-                    Track how your publications perform — views, citations, and downloads — with real-time researcher dashboards.
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Feature 4 */}
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="group relative overflow-hidden rounded-[2rem] bg-white p-8 sm:p-10 shadow-lg border border-slate-100 transition-all hover:shadow-xl"
-              >
-                <div className="relative z-10">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 mb-6">
-                    <CheckCircle2 className="h-7 w-7" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">Review Workflow</h3>
-                  <p className="text-slate-600 leading-relaxed font-medium">
-                    Built-in peer review tools — assign reviewers, track revisions, and manage decisions in one place.
-                  </p>
-                </div>
-              </motion.div>
-
-              {/* Feature 5 */}
-              <motion.div 
-                whileHover={{ y: -5 }}
-                className="group relative overflow-hidden rounded-[2rem] bg-white p-8 sm:p-10 shadow-lg border border-slate-100 transition-all hover:shadow-xl"
-              >
-                <div className="relative z-10">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 mb-6">
-                    <Database className="h-7 w-7" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">Institutional Archive</h3>
-                  <p className="text-slate-600 leading-relaxed font-medium">
-                    A permanent, searchable digital repository preserving academic output for generations.
-                  </p>
-                </div>
-              </motion.div>
             </div>
           </div>
         </section>

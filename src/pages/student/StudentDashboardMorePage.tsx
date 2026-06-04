@@ -21,14 +21,6 @@ const CHART_SECONDARY = "#D0D4F7";
 const CHART_GRID = "#E8EAF2";
 const CHART_AXIS = "#8A8FA8";
 
-const quickAccessLinks = [
-  ["Academic Records", "/student/documents/academic"],
-  ["Certificates", "/student/documents/certificates"],
-  ["Personal Projects", "/student/projects"],
-  ["Schedule & Attendance", "/student/schedule"],
-  ["Final Year Project", "/student/documents/final-year-project"],
-];
-
 export default function StudentDashboardMorePage() {
   const navigate = useNavigate();
   const avgAttendance = Math.round(
@@ -39,7 +31,7 @@ export default function StudentDashboardMorePage() {
     <div className="ds-page-scroll ds-dashboard-page">
       <PageHeader
         title="Dashboard Details"
-        subtitle="Attendance, recent uploads, and quick access"
+        subtitle="Attendance and recent uploads"
       />
 
       <div className="ds-dashboard-grid-bottom">
@@ -128,35 +120,6 @@ export default function StudentDashboardMorePage() {
           </ul>
         </DataCard>
       </div>
-
-      <DataCard label="Quick Access">
-        <div className="ds-table-wrap">
-          <table className="ds-table">
-            <thead>
-              <tr>
-                <th>Area</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {quickAccessLinks.map(([label, path]) => (
-                <tr key={path}>
-                  <td>{label}</td>
-                  <td>
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-sm"
-                      onClick={() => navigate(path)}
-                    >
-                      Open
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </DataCard>
 
       <div className="ds-dashboard-actions">
         <button type="button" className="btn btn-secondary btn-sm" onClick={() => navigate("/dashboard")}>

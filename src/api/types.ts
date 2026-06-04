@@ -21,6 +21,9 @@ export interface FypResponse {
   keywords?: string;
   department?: string;
   projectType?: string;
+  projectCategory?: string;
+  supervisorName?: string;
+  researchArea?: string;
   status: string;
   academicYear?: string;
   hasThesis?: boolean;
