@@ -73,6 +73,71 @@ export function ModeratorDashboard() {
     setMessageInput("");
   };
 
+  const generateCSVReport = () => {
+    const headers = ["Week", "Verified", "Rejected", "Pending", "Total"];
+    const rows = weeklyTrendData.map(week => [
+      week.week,
+      week.verified,
+      week.rejected,
+      week.pending,
+      week.verified + week.rejected + week.pending
+    ]);
+    
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.join(","))
+    ].join("\n");
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `moderation-trend-report-${new Date().toISOString().split("T")[0]}.csv`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  const generateDetailedReport = () => {
+    const timestamp = new Date().toLocaleString();
+    const totalVerified = weeklyTrendData.reduce((sum, w) => sum + w.verified, 0);
+    const totalRejected = weeklyTrendData.reduce((sum, w) => sum + w.rejected, 0);
+    const totalPending = weeklyTrendData.reduce((sum, w) => sum + w.pending, 0);
+    
+    const reportContent = `
+MODERATION ACTIVITY REPORT
+Generated: ${timestamp}
+=====================================
+
+SUMMARY METRICS
+Verified Submissions: ${totalVerified}
+Rejected Submissions: ${totalRejected}
+Pending Submissions: ${totalPending}
+Total Submissions: ${totalVerified + totalRejected + totalPending}
+
+WEEKLY BREAKDOWN
+${weeklyTrendData.map(w => `${w.week}: Verified=${w.verified}, Rejected=${w.rejected}, Pending=${w.pending}`).join("\n")}
+
+QUEUE STATUS
+Total in Queue: ${queue.length}
+${queue.map((q, i) => `${i + 1}. ${q.title} - ${q.author} (${q.dept}) - ${q.confidence}% confidence`).join("\n")}
+
+=====================================
+End of Report
+    `.trim();
+    
+    const blob = new Blob([reportContent], { type: "text/plain;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `detailed-moderation-report-${new Date().toISOString().split("T")[0]}.txt`);
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-8 pb-10">
       {/* ── Welcome Header ── */}
@@ -193,6 +258,23 @@ export function ModeratorDashboard() {
                     <TrendingUp className="h-5 w-5" />
                   </div>
                   <h2 className="text-[12px] font-bold text-[#1a1d2e] uppercase tracking-[0.14em]">Weekly Trend</h2>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-[10px] font-bold h-8 border-[#e8eaf2] text-[#8a8fa8] hover:bg-[#f7f8fd] gap-1.5"
+                    onClick={generateCSVReport}
+                  >
+                    <Download className="h-3.5 w-3.5" /> CSV
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="text-[10px] font-bold h-8 bg-[#003566] hover:bg-[#003566]/90 text-white gap-1.5"
+                    onClick={generateDetailedReport}
+                  >
+                    <Download className="h-3.5 w-3.5" /> REPORT
+                  </Button>
                 </div>
               </div>
               
