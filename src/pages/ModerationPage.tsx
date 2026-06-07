@@ -349,10 +349,10 @@ const ModerationPage = () => {
       title="Library Content Moderation" 
       subtitle="Final review and archival management of academic submissions."
     >
-      <div className="space-y-6">
+      <div className="space-y-8 pb-10">
 
-        {/* Statistics & Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Header Section with Key Metrics */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {[
             { 
               label: "My Assignments", 
@@ -360,43 +360,44 @@ const ModerationPage = () => {
               desc: "Pending your final review",
               icon: UserCheck,
               color: "text-emerald-600",
-              bg: "bg-emerald-50"
+              bg: "bg-emerald-50",
+              borderColor: "border-emerald-200"
             },
             { 
               label: "Global Queue", 
               value: queueItems.filter(i => i.status === "Pending").length,
               desc: "Total pending submissions",
               icon: Globe,
-              color: "text-[#1d3557]",
-              bg: "bg-slate-100"
+              color: "text-[#003566]",
+              bg: "bg-blue-50",
+              borderColor: "border-blue-200"
             },
           ].map((stat, i) => (
-            <Card key={i} className="group shadow-sm border-slate-200 transition-all duration-300 hover:shadow-md bg-white">
-              <CardContent className="p-3 text-left">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.22em] group-hover:text-[#1d3557] transition-colors">{stat.label}</h3>
-                  <div className={`h-7 w-7 rounded-lg ${stat.bg} flex items-center justify-center ${stat.color}`}>
-                    <stat.icon className="h-3.5 w-3.5" />
+            <Card key={i} className={`group shadow-md border ${stat.borderColor} transition-all duration-500 hover:shadow-lg bg-white rounded-[1.25rem] overflow-hidden`}>
+              <CardContent className="p-5">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <h3 className="text-[11px] font-bold text-[#8a8fa8] uppercase tracking-[0.18em] mb-2">{stat.label}</h3>
+                    <span className="text-3xl font-bold text-[#1a1d2e]">{stat.value}</span>
+                  </div>
+                  <div className={`h-10 w-10 rounded-xl ${stat.bg} flex items-center justify-center ${stat.color} shadow-sm`}>
+                    <stat.icon className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="flex items-end gap-2 mb-1">
-                  <span className="text-xl font-bold text-slate-800">{stat.value}</span>
-                </div>
-                <p className="text-[10px] text-slate-400 font-medium">{stat.desc}</p>
+                <p className="text-[12px] text-[#8a8fa8] font-medium">{stat.desc}</p>
               </CardContent>
             </Card>
           ))}
-          
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex items-center gap-2 border-b border-slate-200 pb-0">
+        <div className="flex items-center gap-1 border-b border-[#e8eaf2] pb-0">
           {["Pending", "Published", "Rejected", "All"].map(tab => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${
-                activeTab === tab ? "border-[#1d3557] text-[#1d3557]" : "border-transparent text-slate-400 hover:text-slate-600"
+              className={`px-5 py-3 text-[12px] font-bold uppercase tracking-[0.14em] transition-all border-b-2 ${
+                activeTab === tab ? "border-[#003566] text-[#003566]" : "border-transparent text-[#8a8fa8] hover:text-[#1a1d2e]"
               }`}
             >
               {tab}
@@ -407,37 +408,37 @@ const ModerationPage = () => {
         {/* Moderation List */}
         <div className="space-y-4">
           {filtered.map((item) => (
-            <Card key={item.id} className={`group border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-md ${expandedItem === item.id ? "ring-2 ring-[#1d3557] shadow-lg" : "hover:border-[#1d3557]/30"}`}>
+            <Card key={item.id} className={`group border-[#e8eaf2] overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md rounded-[1.25rem] ${expandedItem === item.id ? "ring-2 ring-[#003566] shadow-lg" : "hover:border-[#003566]/20"}`}>
               <CardContent className="p-0">
-                <div className="flex items-center gap-4 p-5">
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center transition-colors ${expandedItem === item.id ? "bg-[#1d3557] text-white" : "bg-slate-100 text-[#1d3557]"}`}>
+                <div className="flex items-center gap-4 p-5 hover:bg-[#f7f8fd] transition-colors">
+                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center transition-all font-bold ${expandedItem === item.id ? "bg-[#003566] text-white" : "bg-[#e8f2fc] text-[#003566]"}`}>
                     <FileText className="h-6 w-6" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1.5">
-                      <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-widest bg-slate-50 text-slate-500 border-slate-200">{item.type}</Badge>
-                      <Badge variant="outline" className={`text-[9px] font-bold uppercase tracking-widest ${
-                        item.plagiarismScore > 30 ? "bg-red-50 text-red-600 border-red-200" : "bg-emerald-50 text-emerald-600 border-emerald-200"
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge className="text-[10px] font-bold uppercase tracking-[0.12em] bg-[#f0f2f8] text-[#8a8fa8] border border-[#e8eaf2] rounded-full px-3">{item.type}</Badge>
+                      <Badge className={`text-[10px] font-bold uppercase tracking-[0.12em] rounded-full px-3 ${
+                        item.plagiarismScore > 30 ? "bg-red-50 text-red-700 border border-red-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                       }`}>
-                        {item.plagiarismScore}% Similarity
+                        {item.plagiarismScore}% Sim
                       </Badge>
                     </div>
-                    <h4 className="text-[15px] font-bold text-slate-800 group-hover:text-[#1d3557] transition-colors truncate">{item.title}</h4>
-                    <div className="flex items-center gap-2 mt-1">
-                      <p className="text-[11px] text-slate-500 font-medium">{item.author} · {item.department}</p>
-                      <span className="text-slate-300">|</span>
-                      <p className="text-[11px] text-slate-400 font-bold uppercase tracking-tighter">Submitted {item.submittedDate}</p>
+                    <h4 className="text-[14px] font-bold text-[#1a1d2e] group-hover:text-[#003566] transition-colors line-clamp-1">{item.title}</h4>
+                    <div className="flex items-center gap-2 mt-1.5 text-[12px]">
+                      <p className="text-[#8a8fa8] font-medium">{item.author} · {item.department}</p>
+                      <span className="text-[#e8eaf2]">•</span>
+                      <p className="text-[#8a8fa8] font-medium">{item.submittedDate}</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="hidden sm:flex flex-col items-end mr-2">
-                       <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Assigned To</p>
-                       <p className="text-[11px] font-bold text-[#1d3557]">{item.assignedTo || "Unassigned"}</p>
+                    <div className="hidden sm:flex flex-col items-end">
+                       <p className="text-[10px] font-bold text-[#8a8fa8] uppercase tracking-[0.12em] mb-1">{item.assignedTo ? "Assigned" : "Unassigned"}</p>
+                       <p className="text-[12px] font-bold text-[#003566]">{item.assignedTo ? item.assignedTo.split(" ")[0] : "—"}</p>
                     </div>
                     <Button 
                       variant="ghost" 
                       size="sm" 
-                      className={`h-10 w-10 p-0 rounded-xl transition-all ${expandedItem === item.id ? "bg-[#1d3557] text-white hover:bg-[#1d3557] hover:text-white" : "hover:bg-slate-100"}`} 
+                      className={`h-10 w-10 p-0 rounded-xl transition-all ${expandedItem === item.id ? "bg-[#003566] text-white hover:bg-[#003566] hover:text-white" : "hover:bg-[#f7f8fd]"}`} 
                       onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}
                     >
                       {expandedItem === item.id ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
@@ -446,48 +447,48 @@ const ModerationPage = () => {
                 </div>
 
                 {expandedItem === item.id && (
-                  <div className="border-t border-slate-100 bg-slate-50/50 p-8 space-y-8 animate-in slide-in-from-top-4 duration-500">
+                  <div className="border-t border-[#e8eaf2] bg-[#f7f8fd] p-8 space-y-8 animate-in slide-in-from-top-4 duration-500">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* Left: Supervision & Progress */}
                       <div className="lg:col-span-1 space-y-6">
-                        <div className="space-y-3">
-                          <p className="text-[10px] font-bold text-[#1d3557] uppercase tracking-[0.2em]">Archival Progress</p>
+                        <div className="space-y-4">
+                          <p className="text-[11px] font-bold text-[#003566] uppercase tracking-[0.18em]">Archival Progress</p>
                           <div className="flex items-center gap-4">
                             <div className="flex-1">
                               <Progress value={item.workflowStep * 33.3} className="h-2 [&>div]:bg-emerald-500" />
                             </div>
-                            <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">STEP {item.workflowStep}/3</span>
+                            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">STEP {item.workflowStep}/3</span>
                           </div>
-                          <div className="flex flex-col gap-3 mt-4">
-                            <div className="flex items-center gap-3 text-[12px] text-emerald-600 font-bold bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
-                              <CheckCircle className="h-4 w-4" /> Supervisor Verification
+                          <div className="flex flex-col gap-2 mt-4">
+                            <div className="flex items-center gap-3 text-[12px] text-emerald-700 font-bold bg-white p-3 rounded-[0.875rem] border border-emerald-100 shadow-sm hover:shadow-md transition-all">
+                              <CheckCircle className="h-4 w-4 flex-shrink-0" /> Supervisor Verification
                             </div>
-                            <div className="flex items-center gap-3 text-[12px] text-emerald-600 font-bold bg-white p-3 rounded-xl border border-emerald-100 shadow-sm">
-                              <CheckCircle className="h-4 w-4" /> HOD Content Approval
+                            <div className="flex items-center gap-3 text-[12px] text-emerald-700 font-bold bg-white p-3 rounded-[0.875rem] border border-emerald-100 shadow-sm hover:shadow-md transition-all">
+                              <CheckCircle className="h-4 w-4 flex-shrink-0" /> HOD Content Approval
                             </div>
-                            <div className="flex items-center gap-3 text-[12px] text-slate-800 font-bold bg-white p-3 rounded-xl border border-[#1d3557]/20 shadow-md ring-1 ring-[#1d3557]/10 scale-105 transition-transform">
-                              <ShieldCheck className="h-4 w-4 text-[#1d3557]" /> Librarian Final Moderation
+                            <div className="flex items-center gap-3 text-[12px] text-[#003566] font-bold bg-white p-3 rounded-[0.875rem] border-2 border-[#003566] shadow-md ring-1 ring-[#003566]/10 scale-105 transition-transform">
+                              <ShieldCheck className="h-4 w-4 flex-shrink-0" /> Librarian Final Moderation
                             </div>
                           </div>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="rounded-[1.125rem] border border-[#e8eaf2] bg-white p-5 shadow-sm hover:shadow-md transition-all">
                           <div className="flex items-center justify-between mb-4">
-                            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Departmental Log</p>
-                            <History className="h-3.5 w-3.5 text-slate-300" />
+                            <p className="text-[11px] font-bold text-[#8a8fa8] uppercase tracking-[0.14em]">Departmental Log</p>
+                            <History className="h-4 w-4 text-[#e8eaf2]" />
                           </div>
                           <div className="space-y-4">
                             {item.comments.length > 0 ? item.comments.map(c => (
-                              <div key={c.id} className="relative pl-4 border-l-2 border-slate-100 space-y-1">
-                                <div className="absolute -left-1.5 top-0 h-3 w-3 rounded-full bg-white border-2 border-slate-200" />
-                                <div className="flex justify-between text-[10px]">
-                                  <span className="font-bold text-[#1d3557]">{c.user}</span>
-                                  <span className="text-slate-400 font-medium">{c.date}</span>
+                              <div key={c.id} className="relative pl-4 border-l-2 border-[#e8eaf2] space-y-1">
+                                <div className="absolute -left-1.5 top-0 h-3 w-3 rounded-full bg-white border-2 border-[#e8eaf2]" />
+                                <div className="flex justify-between text-[11px]">
+                                  <span className="font-bold text-[#1a1d2e]">{c.user}</span>
+                                  <span className="text-[#8a8fa8] font-medium">{c.date}</span>
                                 </div>
-                                <p className="text-[12px] text-slate-600 leading-relaxed italic">"{c.text}"</p>
+                                <p className="text-[12px] text-[#8a8fa8] leading-relaxed">{c.text}</p>
                               </div>
                             )) : (
-                               <div className="text-center py-4 text-slate-400 italic text-[11px]">No previous comments found.</div>
+                               <div className="text-center py-4 text-[#8a8fa8] text-[11px]">No previous comments found.</div>
                             )}
                           </div>
                         </div>
@@ -495,49 +496,49 @@ const ModerationPage = () => {
 
                       {/* Right: Librarian Actions & New Feedback */}
                       <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-                          <p className="text-[10px] font-bold text-[#1d3557] uppercase tracking-[0.2em] mb-4">Final Librarian Feedback</p>
+                        <div className="bg-white rounded-[1.125rem] border border-[#e8eaf2] p-6 shadow-sm hover:shadow-md transition-all">
+                          <p className="text-[11px] font-bold text-[#003566] uppercase tracking-[0.18em] mb-4">Final Librarian Feedback</p>
                           <div className="space-y-4">
                             <Textarea 
                               placeholder="Add your moderation comments and final feedback for the student..."
-                              className="bg-slate-50 border-slate-100 text-[13px] h-32 focus:bg-white transition-all rounded-xl p-4 leading-relaxed"
+                              className="bg-[#f7f8fd] border-[#e8eaf2] text-[13px] text-[#1a1d2e] h-32 focus:bg-white focus:border-[#003566]/50 transition-all rounded-[0.875rem] p-4 leading-relaxed placeholder:text-[#8a8fa8]"
                               value={feedback}
                               onChange={(e) => setFeedback(e.target.value)}
                             />
                             <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
                               <Button 
-                                className="w-full sm:flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-12 gap-2 text-[11px] tracking-widest shadow-lg shadow-emerald-600/20"
+                                className="w-full sm:flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 gap-2 text-[11px] tracking-[0.12em] shadow-md hover:shadow-lg transition-all rounded-[0.875rem]"
                                 onClick={() => handleAction(item.id, "Published")}
                               >
                                 <CheckCircle className="h-4 w-4" /> APPROVE & PUBLISH
                               </Button>
                               <Button 
                                 variant="outline" 
-                                className="w-full sm:flex-1 border-red-200 text-red-600 hover:bg-red-50 font-bold h-12 gap-2 text-[11px] tracking-widest"
+                                className="w-full sm:flex-1 border-red-200 text-red-600 hover:bg-red-50 font-bold h-11 gap-2 text-[11px] tracking-[0.12em] rounded-[0.875rem]"
                                 onClick={() => handleAction(item.id, "Rejected")}
                               >
                                 <X className="h-4 w-4" /> REJECT SUBMISSION
                               </Button>
                             </div>
                             
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-4 border-t border-slate-50">
-                               <Button size="sm" variant="ghost" className="text-[11px] font-bold text-slate-500 h-9 gap-2 hover:bg-slate-100" onClick={() => handleAction(item.id, "Request Re-Upload") }>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-4 border-t border-[#e8eaf2]">
+                               <Button size="sm" variant="ghost" className="text-[11px] font-bold text-[#8a8fa8] h-9 gap-2 hover:bg-[#f7f8fd] hover:text-[#003566] rounded-[0.75rem] transition-all" onClick={() => handleAction(item.id, "Request Re-Upload") }>
                                  <RefreshCw className="h-3.5 w-3.5" /> REQUEST RE-UPLOAD
                                </Button>
                                <Button 
                                  size="sm" 
                                  variant="ghost" 
-                                 className={`text-[11px] font-bold h-9 gap-2 ${
+                                 className={`text-[11px] font-bold h-9 gap-2 rounded-[0.75rem] transition-all ${
                                    (item as any).recommended 
                                    ? "text-amber-600 hover:bg-amber-50" 
-                                   : "text-slate-500 hover:bg-amber-50 hover:text-amber-600"
+                                   : "text-[#8a8fa8] hover:bg-[#f7f8fd] hover:text-[#003566]"
                                  }`}
                                  onClick={() => handleRecommend(item.id)}
                                >
                                  <Sparkles className="h-3.5 w-3.5" /> 
                                  {(item as any).recommended ? "RECOMMENDED" : "RECOMMEND SHOWCASE"}
                                </Button>
-                               <Button size="sm" variant="ghost" className="col-span-2 sm:col-span-1 text-[11px] font-bold text-[#1d3557] h-9 gap-2 ml-auto group" onClick={() => toast({ title: "View document", description: "Opening the full document viewer." }) }>
+                               <Button size="sm" variant="ghost" className="col-span-2 sm:col-span-1 text-[11px] font-bold text-[#003566] h-9 gap-2 ml-auto group hover:bg-[#f7f8fd] rounded-[0.75rem] transition-all" onClick={() => toast({ title: "View document", description: "Opening the full document viewer." }) }>
                                  <Eye className="h-3.5 w-3.5" /> VIEW FULL DOCUMENT
                                  <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
                                </Button>
