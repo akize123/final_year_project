@@ -9,6 +9,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, LineChart, Line, PieChart, Pie, Cell
 } from "recharts";
 import { useState } from "react";
+import { jsPDF } from "jspdf";
 import { 
   Filter, ChevronDown, CheckCircle2,
   Users, Activity, ChevronRight, BarChart2, ShieldCheck, XCircle, FileText, Clock,
@@ -73,75 +74,84 @@ export function ModeratorDashboard() {
     setMessageInput("");
   };
 
-  const generateCSVReport = () => {
-    const headers = ["Week", "Verified", "Rejected", "Pending", "Total"];
-    const rows = weeklyTrendData.map(week => [
-      week.week,
-      week.verified,
-      week.rejected,
-      week.pending,
-      week.verified + week.rejected + week.pending
-    ]);
-    
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(row => row.join(","))
-    ].join("\n");
-    
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `moderation-trend-report-${new Date().toISOString().split("T")[0]}.csv`);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
-  const generateDetailedReport = () => {
+  const generatePDFReport = () => {
+    const doc = new jsPDF();
     const timestamp = new Date().toLocaleString();
     const totalVerified = weeklyTrendData.reduce((sum, w) => sum + w.verified, 0);
     const totalRejected = weeklyTrendData.reduce((sum, w) => sum + w.rejected, 0);
     const totalPending = weeklyTrendData.reduce((sum, w) => sum + w.pending, 0);
+    const totalSubmissions = totalVerified + totalRejected + totalPending;
+
+    let yPosition = 20;
+
+    // Header
+    doc.setFontSize(18);
+    doc.setFont(undefined, "bold");
+    doc.text("MODERATION ACTIVITY REPORT", 20, yPosition);
     
-    const reportContent = `
-MODERATION ACTIVITY REPORT
-Generated: ${timestamp}
-=====================================
+    yPosition += 10;
+    doc.setFontSize(10);
+    doc.setFont(undefined, "normal");
+    doc.text(`Generated: ${timestamp}`, 20, yPosition);
 
-SUMMARY METRICS
-Verified Submissions: ${totalVerified}
-Rejected Submissions: ${totalRejected}
-Pending Submissions: ${totalPending}
-Total Submissions: ${totalVerified + totalRejected + totalPending}
-
-WEEKLY BREAKDOWN
-${weeklyTrendData.map(w => `${w.week}: Verified=${w.verified}, Rejected=${w.rejected}, Pending=${w.pending}`).join("\n")}
-
-QUEUE STATUS
-Total in Queue: ${queue.length}
-${queue.map((q, i) => `${i + 1}. ${q.title} - ${q.author} (${q.dept}) - ${q.confidence}% confidence`).join("\n")}
-
-=====================================
-End of Report
-    `.trim();
+    // Summary Metrics
+    yPosition += 15;
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.text("SUMMARY METRICS", 20, yPosition);
     
-    const blob = new Blob([reportContent], { type: "text/plain;charset=utf-8;" });
-    const link = document.createElement("a");
-    const url = URL.createObjectURL(blob);
-    link.setAttribute("href", url);
-    link.setAttribute("download", `detailed-moderation-report-${new Date().toISOString().split("T")[0]}.txt`);
-    link.style.visibility = "hidden";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    yPosition += 8;
+    doc.setFontSize(10);
+    doc.setFont(undefined, "normal");
+    doc.text(`Verified Submissions: ${totalVerified}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Rejected Submissions: ${totalRejected}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Pending Submissions: ${totalPending}`, 20, yPosition);
+    yPosition += 6;
+    doc.text(`Total Submissions: ${totalSubmissions}`, 20, yPosition);
+
+    // Weekly Breakdown
+    yPosition += 12;
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.text("WEEKLY BREAKDOWN", 20, yPosition);
+    
+    yPosition += 8;
+    doc.setFontSize(9);
+    doc.setFont(undefined, "normal");
+    weeklyTrendData.forEach(week => {
+      doc.text(`${week.week}: Verified=${week.verified}, Rejected=${week.rejected}, Pending=${week.pending}`, 20, yPosition);
+      yPosition += 6;
+    });
+
+    // Queue Status
+    yPosition += 8;
+    doc.setFontSize(12);
+    doc.setFont(undefined, "bold");
+    doc.text("SUBMISSION QUEUE STATUS", 20, yPosition);
+    
+    yPosition += 8;
+    doc.setFontSize(9);
+    doc.setFont(undefined, "normal");
+    queue.forEach((q, i) => {
+      const text = `${i + 1}. ${q.title.substring(0, 40)}... - ${q.author} (${q.dept}) - ${q.confidence}%`;
+      doc.text(text, 20, yPosition);
+      yPosition += 6;
+      if (yPosition > 270) {
+        doc.addPage();
+        yPosition = 20;
+      }
+    });
+
+    // Save PDF
+    doc.save(`moderation-report-${new Date().toISOString().split("T")[0]}.pdf`);
   };
 
   return (
-    <div className="space-y-8 pb-10">
+    <div className="space-y-6 pb-10">
       {/* ── Welcome Header ── */}
-      <div className="space-y-4">
+      <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-[20px] font-bold text-[#1a1d2e]">Content Moderation Hub</h1>
@@ -157,7 +167,7 @@ End of Report
       </div>
 
       {/* ── Key Metrics Grid ── */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 -mx-8 px-8">
         {[
           { label: "Verified", value: approvedCount, icon: CheckCircle2, color: "emerald", bgColor: "bg-emerald-50" },
           { label: "Pending Review", value: pendingGlobal, icon: Clock, color: "blue", bgColor: "bg-blue-50" },
@@ -183,10 +193,10 @@ End of Report
       </div>
 
       {/* ── Main Content Grid ── */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 -mx-8 px-8">
         
         {/* Left Col: Verification Queue + Weekly Trend */}
-        <div className="xl:col-span-2 space-y-8">
+        <div className="xl:col-span-2 space-y-6">
           {/* Verification Queue */}
           <Card className="border-[#e8eaf2] shadow-md hover:shadow-lg transition-all rounded-[1.25rem] bg-white overflow-hidden">
             <CardContent className="p-0">
@@ -259,23 +269,13 @@ End of Report
                   </div>
                   <h2 className="text-[12px] font-bold text-[#1a1d2e] uppercase tracking-[0.14em]">Weekly Trend</h2>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="text-[10px] font-bold h-8 border-[#e8eaf2] text-[#8a8fa8] hover:bg-[#f7f8fd] gap-1.5"
-                    onClick={generateCSVReport}
-                  >
-                    <Download className="h-3.5 w-3.5" /> CSV
-                  </Button>
-                  <Button
-                    size="sm"
-                    className="text-[10px] font-bold h-8 bg-[#003566] hover:bg-[#003566]/90 text-white gap-1.5"
-                    onClick={generateDetailedReport}
-                  >
-                    <Download className="h-3.5 w-3.5" /> REPORT
-                  </Button>
-                </div>
+                <Button
+                  size="sm"
+                  className="text-[10px] font-bold h-8 bg-[#003566] hover:bg-[#003566]/90 text-white gap-1.5 rounded-[0.75rem]"
+                  onClick={generatePDFReport}
+                >
+                  <Download className="h-3.5 w-3.5" /> EXPORT PDF
+                </Button>
               </div>
               
               <div className="p-5">
@@ -304,7 +304,7 @@ End of Report
         </div>
 
         {/* Right Col: Communication Hub */}
-        <div className="space-y-8">
+        <div className="space-y-6">
           {/* Communication Panel */}
           <Card className="border-[#e8eaf2] shadow-md hover:shadow-lg transition-all rounded-[1.25rem] bg-white overflow-hidden flex flex-col h-full">
             <CardContent className="p-0 flex flex-col h-full">
