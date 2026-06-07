@@ -346,224 +346,168 @@ const ModerationPage = () => {
 
   return (
     <AppLayout 
-      title="Library Content Moderation" 
-      subtitle="Final review and archival management of academic submissions."
+      title="Moderation Queue" 
+      subtitle="Review and manage academic submissions."
     >
-      <div className="space-y-8 pb-10">
+      <div className="space-y-4 pb-8">
 
-        {/* Header Section with Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {[
-            { 
-              label: "My Assignments", 
-              value: queueItems.filter(i => i.assignedTo === "Alice Librarian" && i.status === "Pending").length,
-              desc: "Pending your final review",
-              icon: UserCheck,
-              color: "text-emerald-600",
-              bg: "bg-emerald-50",
-              borderColor: "border-emerald-200"
-            },
-            { 
-              label: "Global Queue", 
-              value: queueItems.filter(i => i.status === "Pending").length,
-              desc: "Total pending submissions",
-              icon: Globe,
-              color: "text-[#003566]",
-              bg: "bg-blue-50",
-              borderColor: "border-blue-200"
-            },
-          ].map((stat, i) => (
-            <Card key={i} className={`group shadow-md border ${stat.borderColor} transition-all duration-500 hover:shadow-lg bg-white rounded-[1.25rem] overflow-hidden`}>
-              <CardContent className="p-5">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h3 className="text-[11px] font-bold text-[#8a8fa8] uppercase tracking-[0.18em] mb-2">{stat.label}</h3>
-                    <span className="text-3xl font-bold text-[#1a1d2e]">{stat.value}</span>
-                  </div>
-                  <div className={`h-10 w-10 rounded-xl ${stat.bg} flex items-center justify-center ${stat.color} shadow-sm`}>
-                    <stat.icon className="h-5 w-5" />
-                  </div>
-                </div>
-                <p className="text-[12px] text-[#8a8fa8] font-medium">{stat.desc}</p>
-              </CardContent>
-            </Card>
-          ))}
+        {/* Header & Metrics */}
+        <div className="flex items-end justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-[#1a1d2e]">Queue</h1>
+            <p className="text-sm text-[#8a8fa8] mt-0.5">{filtered.length} items total</p>
+          </div>
+          <div className="flex gap-2">
+            <Select value={activeTab} onValueChange={setActiveTab}>
+              <SelectTrigger className="h-9 w-40 bg-white border-[#e8eaf2] text-sm rounded-lg">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {["All", "Pending", "Published", "Rejected"].map(tab => (
+                  <SelectItem key={tab} value={tab}>{tab}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="flex items-center gap-1 border-b border-[#e8eaf2] pb-0">
-          {["Pending", "Published", "Rejected", "All"].map(tab => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`px-5 py-3 text-[12px] font-bold uppercase tracking-[0.14em] transition-all border-b-2 ${
-                activeTab === tab ? "border-[#003566] text-[#003566]" : "border-transparent text-[#8a8fa8] hover:text-[#1a1d2e]"
-              }`}
-            >
-              {tab}
-            </button>
-          ))}
+        {/* Quick Stats - Compact Inline */}
+        <div className="flex gap-4 pb-2 border-b border-[#e8eaf2]">
+          <div className="text-center">
+            <p className="text-xs text-[#8a8fa8] font-medium">Assigned</p>
+            <p className="text-lg font-bold text-[#1a1d2e]">{queueItems.filter(i => i.assignedTo === "Alice Librarian" && i.status === "Pending").length}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-[#8a8fa8] font-medium">Pending</p>
+            <p className="text-lg font-bold text-[#003566]">{queueItems.filter(i => i.status === "Pending").length}</p>
+          </div>
+          <div className="text-center">
+            <p className="text-xs text-[#8a8fa8] font-medium">Published</p>
+            <p className="text-lg font-bold text-emerald-600">{queueItems.filter(i => i.status === "Published").length}</p>
+          </div>
         </div>
 
-        {/* Moderation List */}
-        <div className="space-y-4">
+        {/* Moderation List - Table-like */}
+        <div className="divide-y divide-[#e8eaf2] border border-[#e8eaf2] rounded-lg bg-white overflow-hidden">
           {filtered.map((item) => (
-            <Card key={item.id} className={`group border-[#e8eaf2] overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md rounded-[1.25rem] ${expandedItem === item.id ? "ring-2 ring-[#003566] shadow-lg" : "hover:border-[#003566]/20"}`}>
-              <CardContent className="p-0">
-                <div className="flex items-center gap-4 p-5 hover:bg-[#f7f8fd] transition-colors">
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center transition-all font-bold ${expandedItem === item.id ? "bg-[#003566] text-white" : "bg-[#e8f2fc] text-[#003566]"}`}>
-                    <FileText className="h-6 w-6" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Badge className="text-[10px] font-bold uppercase tracking-[0.12em] bg-[#f0f2f8] text-[#8a8fa8] border border-[#e8eaf2] rounded-full px-3">{item.type}</Badge>
-                      <Badge className={`text-[10px] font-bold uppercase tracking-[0.12em] rounded-full px-3 ${
-                        item.plagiarismScore > 30 ? "bg-red-50 text-red-700 border border-red-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
-                      }`}>
-                        {item.plagiarismScore}% Sim
-                      </Badge>
-                    </div>
-                    <h4 className="text-[14px] font-bold text-[#1a1d2e] group-hover:text-[#003566] transition-colors line-clamp-1">{item.title}</h4>
-                    <div className="flex items-center gap-2 mt-1.5 text-[12px]">
-                      <p className="text-[#8a8fa8] font-medium">{item.author} · {item.department}</p>
-                      <span className="text-[#e8eaf2]">•</span>
-                      <p className="text-[#8a8fa8] font-medium">{item.submittedDate}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="hidden sm:flex flex-col items-end">
-                       <p className="text-[10px] font-bold text-[#8a8fa8] uppercase tracking-[0.12em] mb-1">{item.assignedTo ? "Assigned" : "Unassigned"}</p>
-                       <p className="text-[12px] font-bold text-[#003566]">{item.assignedTo ? item.assignedTo.split(" ")[0] : "—"}</p>
-                    </div>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      className={`h-10 w-10 p-0 rounded-xl transition-all ${expandedItem === item.id ? "bg-[#003566] text-white hover:bg-[#003566] hover:text-white" : "hover:bg-[#f7f8fd]"}`} 
-                      onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}
-                    >
-                      {expandedItem === item.id ? <ChevronUp className="h-5 w-5" /> : <ChevronDown className="h-5 w-5" />}
-                    </Button>
+            <div key={item.id} className={`transition-colors ${expandedItem === item.id ? "bg-[#e8f2fc]" : "hover:bg-[#f9fafb]"}`}>
+              <button 
+                onClick={() => setExpandedItem(expandedItem === item.id ? null : item.id)}
+                className="w-full px-5 py-3.5 flex items-center gap-4 text-left"
+              >
+                <div className={`h-9 w-9 rounded-lg flex items-center justify-center flex-shrink-0 font-semibold text-sm ${expandedItem === item.id ? "bg-[#003566] text-white" : "bg-[#f0f2f8] text-[#003566]"}`}>
+                  <FileText className="h-4 w-4" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-[#1a1d2e] truncate">{item.title}</p>
+                  <div className="flex items-center gap-2 mt-0.5 text-xs text-[#8a8fa8]">
+                    <span>{item.author}</span>
+                    <span>•</span>
+                    <span>{item.department}</span>
                   </div>
                 </div>
+                <div className="hidden sm:flex items-center gap-3">
+                  <Badge className={`text-xs font-medium px-2 py-1 ${
+                    item.plagiarismScore > 30 ? "bg-red-50 text-red-700 border border-red-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                  }`}>
+                    {item.plagiarismScore}%
+                  </Badge>
+                  <Badge className="bg-[#f0f2f8] text-[#8a8fa8] text-xs font-medium px-2 py-1">{item.type}</Badge>
+                  <span className="text-xs text-[#8a8fa8] font-medium min-w-[60px] text-right">{item.submittedDate}</span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="h-8 w-8 p-0 hover:bg-[#f0f2f8]"
+                >
+                  {expandedItem === item.id ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                </Button>
+              </button>
 
-                {expandedItem === item.id && (
-                  <div className="border-t border-[#e8eaf2] bg-[#f7f8fd] p-8 space-y-8 animate-in slide-in-from-top-4 duration-500">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                      {/* Left: Supervision & Progress */}
-                      <div className="lg:col-span-1 space-y-6">
-                        <div className="space-y-4">
-                          <p className="text-[11px] font-bold text-[#003566] uppercase tracking-[0.18em]">Archival Progress</p>
-                          <div className="flex items-center gap-4">
-                            <div className="flex-1">
-                              <Progress value={item.workflowStep * 33.3} className="h-2 [&>div]:bg-emerald-500" />
-                            </div>
-                            <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">STEP {item.workflowStep}/3</span>
+              {expandedItem === item.id && (
+                <div className="border-t border-[#e8eaf2] bg-white px-5 py-4 space-y-4 animate-in slide-in-from-top-2 duration-300">
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    {/* Left: Progress & Log */}
+                    <div className="lg:col-span-1 space-y-4">
+                      <div className="bg-[#f9fafb] border border-[#e8eaf2] rounded-lg p-4">
+                        <p className="text-xs font-semibold text-[#003566] mb-3">Workflow</p>
+                        <div className="space-y-2.5">
+                          <div className="flex items-center gap-2 text-xs">
+                            <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                            <span className="text-[#1a1d2e] font-medium">Supervisor Verified</span>
                           </div>
-                          <div className="flex flex-col gap-2 mt-4">
-                            <div className="flex items-center gap-3 text-[12px] text-emerald-700 font-bold bg-white p-3 rounded-[0.875rem] border border-emerald-100 shadow-sm hover:shadow-md transition-all">
-                              <CheckCircle className="h-4 w-4 flex-shrink-0" /> Supervisor Verification
-                            </div>
-                            <div className="flex items-center gap-3 text-[12px] text-emerald-700 font-bold bg-white p-3 rounded-[0.875rem] border border-emerald-100 shadow-sm hover:shadow-md transition-all">
-                              <CheckCircle className="h-4 w-4 flex-shrink-0" /> HOD Content Approval
-                            </div>
-                            <div className="flex items-center gap-3 text-[12px] text-[#003566] font-bold bg-white p-3 rounded-[0.875rem] border-2 border-[#003566] shadow-md ring-1 ring-[#003566]/10 scale-105 transition-transform">
-                              <ShieldCheck className="h-4 w-4 flex-shrink-0" /> Librarian Final Moderation
-                            </div>
+                          <div className="flex items-center gap-2 text-xs">
+                            <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                            <span className="text-[#1a1d2e] font-medium">HOD Approved</span>
                           </div>
-                        </div>
-
-                        <div className="rounded-[1.125rem] border border-[#e8eaf2] bg-white p-5 shadow-sm hover:shadow-md transition-all">
-                          <div className="flex items-center justify-between mb-4">
-                            <p className="text-[11px] font-bold text-[#8a8fa8] uppercase tracking-[0.14em]">Departmental Log</p>
-                            <History className="h-4 w-4 text-[#e8eaf2]" />
-                          </div>
-                          <div className="space-y-4">
-                            {item.comments.length > 0 ? item.comments.map(c => (
-                              <div key={c.id} className="relative pl-4 border-l-2 border-[#e8eaf2] space-y-1">
-                                <div className="absolute -left-1.5 top-0 h-3 w-3 rounded-full bg-white border-2 border-[#e8eaf2]" />
-                                <div className="flex justify-between text-[11px]">
-                                  <span className="font-bold text-[#1a1d2e]">{c.user}</span>
-                                  <span className="text-[#8a8fa8] font-medium">{c.date}</span>
-                                </div>
-                                <p className="text-[12px] text-[#8a8fa8] leading-relaxed">{c.text}</p>
-                              </div>
-                            )) : (
-                               <div className="text-center py-4 text-[#8a8fa8] text-[11px]">No previous comments found.</div>
-                            )}
+                          <div className="flex items-center gap-2 text-xs">
+                            <ShieldCheck className="h-4 w-4 text-[#003566] flex-shrink-0" />
+                            <span className="text-[#003566] font-semibold">Final Review (You)</span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Right: Librarian Actions & New Feedback */}
-                      <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-[1.125rem] border border-[#e8eaf2] p-6 shadow-sm hover:shadow-md transition-all">
-                          <p className="text-[11px] font-bold text-[#003566] uppercase tracking-[0.18em] mb-4">Final Librarian Feedback</p>
-                          <div className="space-y-4">
-                            <Textarea 
-                              placeholder="Add your moderation comments and final feedback for the student..."
-                              className="bg-[#f7f8fd] border-[#e8eaf2] text-[13px] text-[#1a1d2e] h-32 focus:bg-white focus:border-[#003566]/50 transition-all rounded-[0.875rem] p-4 leading-relaxed placeholder:text-[#8a8fa8]"
-                              value={feedback}
-                              onChange={(e) => setFeedback(e.target.value)}
-                            />
-                            <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
-                              <Button 
-                                className="w-full sm:flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-11 gap-2 text-[11px] tracking-[0.12em] shadow-md hover:shadow-lg transition-all rounded-[0.875rem]"
-                                onClick={() => handleAction(item.id, "Published")}
-                              >
-                                <CheckCircle className="h-4 w-4" /> APPROVE & PUBLISH
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                className="w-full sm:flex-1 border-red-200 text-red-600 hover:bg-red-50 font-bold h-11 gap-2 text-[11px] tracking-[0.12em] rounded-[0.875rem]"
-                                onClick={() => handleAction(item.id, "Rejected")}
-                              >
-                                <X className="h-4 w-4" /> REJECT SUBMISSION
-                              </Button>
-                            </div>
-                            
-                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-4 border-t border-[#e8eaf2]">
-                               <Button size="sm" variant="ghost" className="text-[11px] font-bold text-[#8a8fa8] h-9 gap-2 hover:bg-[#f7f8fd] hover:text-[#003566] rounded-[0.75rem] transition-all" onClick={() => handleAction(item.id, "Request Re-Upload") }>
-                                 <RefreshCw className="h-3.5 w-3.5" /> REQUEST RE-UPLOAD
-                               </Button>
-                               <Button 
-                                 size="sm" 
-                                 variant="ghost" 
-                                 className={`text-[11px] font-bold h-9 gap-2 rounded-[0.75rem] transition-all ${
-                                   (item as any).recommended 
-                                   ? "text-amber-600 hover:bg-amber-50" 
-                                   : "text-[#8a8fa8] hover:bg-[#f7f8fd] hover:text-[#003566]"
-                                 }`}
-                                 onClick={() => handleRecommend(item.id)}
-                               >
-                                 <Sparkles className="h-3.5 w-3.5" /> 
-                                 {(item as any).recommended ? "RECOMMENDED" : "RECOMMEND SHOWCASE"}
-                               </Button>
-                               <Button size="sm" variant="ghost" className="col-span-2 sm:col-span-1 text-[11px] font-bold text-[#003566] h-9 gap-2 ml-auto group hover:bg-[#f7f8fd] rounded-[0.75rem] transition-all" onClick={() => toast({ title: "View document", description: "Opening the full document viewer." }) }>
-                                 <Eye className="h-3.5 w-3.5" /> VIEW FULL DOCUMENT
-                                 <ChevronRight className="h-3 w-3 group-hover:translate-x-1 transition-transform" />
-                               </Button>
-                            </div>
+                      {item.comments.length > 0 && (
+                        <div className="bg-[#f9fafb] border border-[#e8eaf2] rounded-lg p-4">
+                          <p className="text-xs font-semibold text-[#8a8fa8] mb-2">Comments</p>
+                          <div className="space-y-2 max-h-32 overflow-y-auto text-xs">
+                            {item.comments.map(c => (
+                              <div key={c.id} className="text-[#8a8fa8]">
+                                <span className="font-medium text-[#1a1d2e]">{c.user}:</span> {c.text}
+                              </div>
+                            ))}
                           </div>
                         </div>
+                      )}
+                    </div>
 
-                        {/* Quick Tips for Moderators */}
-                        <div className="bg-[#1d3557]/5 border border-[#1d3557]/10 rounded-2xl p-5 flex gap-4 items-start">
-                          <div className="h-10 w-10 rounded-xl bg-[#1d3557] text-white flex items-center justify-center flex-shrink-0 shadow-md">
-                            <Info className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <h5 className="text-[12px] font-bold text-[#1d3557] mb-1">Moderator Quick Guide</h5>
-                            <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
-                              Ensure the document is a valid PDF, plagiarism score is under 20%, and all metadata (Title, Author) matches the uploaded file before publishing to the public archive.
-                            </p>
-                          </div>
+                    {/* Right: Feedback & Actions */}
+                    <div className="lg:col-span-2 space-y-4">
+                      <div className="border border-[#e8eaf2] rounded-lg p-4">
+                        <p className="text-xs font-semibold text-[#1a1d2e] mb-2">Feedback</p>
+                        <Textarea 
+                          placeholder="Add comments..."
+                          className="bg-white border border-[#e8eaf2] text-sm text-[#1a1d2e] h-20 rounded-lg placeholder:text-[#8a8fa8] resize-none"
+                          value={feedback}
+                          onChange={(e) => setFeedback(e.target.value)}
+                        />
+                        <div className="grid grid-cols-2 gap-2 pt-3">
+                          <Button 
+                            className="h-9 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm rounded-lg gap-1.5"
+                            onClick={() => handleAction(item.id, "Published")}
+                          >
+                            <CheckCircle className="h-3.5 w-3.5" /> Approve
+                          </Button>
+                          <Button 
+                            className="h-9 border border-red-300 text-red-600 hover:bg-red-50 font-semibold text-sm rounded-lg gap-1.5"
+                            variant="outline"
+                            onClick={() => handleAction(item.id, "Rejected")}
+                          >
+                            <X className="h-3.5 w-3.5" /> Reject
+                          </Button>
+                          <Button 
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 text-xs font-medium text-[#8a8fa8] hover:bg-[#f9fafb]"
+                            onClick={() => handleAction(item.id, "Request Re-Upload")}
+                          >
+                            <RefreshCw className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            size="sm"
+                            variant="ghost"
+                            className={`h-8 text-xs font-medium ${(item as any).recommended ? "text-amber-600" : "text-[#8a8fa8]"}`}
+                            onClick={() => handleRecommend(item.id)}
+                          >
+                            <Sparkles className="h-3 w-3" />
+                          </Button>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
-              </CardContent>
-            </Card>
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </div>
