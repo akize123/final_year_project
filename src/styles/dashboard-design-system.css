@@ -82,7 +82,8 @@
 }
 
 .ds-student-layout .ds-main-content {
-  margin-top: var(--ds-navbar-height);
+
+  padding: 20px 22px 18px 0;
 }
 
 .ds-student-docs-subnav {
@@ -551,11 +552,11 @@
 .ds-main-content {
   flex: 1;
   margin-left: var(--ds-sidebar-width);
-  background: var(--ds-content-bg);
+  background: linear-gradient(180deg, #ffffff 0%, #f7f9fd 100%);
   height: calc(100vh - var(--ds-navbar-height));
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 28px 32px;
+  padding: 18px 20px 24px;
   box-sizing: border-box;
 }
 
@@ -1395,12 +1396,12 @@
 .ds-student-welcome {
   position: relative;
   overflow: hidden;
-  margin-bottom: 22px;
-  padding: 14px 18px;
-  border-radius: 14px;
-  border: 1px solid rgba(0, 53, 102, 0.1);
-  background: linear-gradient(135deg, #ffffff 0%, #f3f8fd 100%);
-  box-shadow: 0 8px 24px rgba(0, 53, 102, 0.06);
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(0, 53, 102, 0.10);
+  background: linear-gradient(135deg, #ffffff 0%, #f5f8ff 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
 }
 
 .ds-student-welcome::before {
@@ -1470,16 +1471,16 @@
 
 /* Cards */
 .ds-card {
-  background: var(--ds-card-bg);
-  border: 1px solid var(--ds-border);
-  border-radius: 14px;
-  padding: 24px;
-  box-shadow: 0 2px 8px rgba(91, 108, 249, 0.06);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.06);
 }
 
 .ds-card-compact {
-  padding: 18px;
-  border-radius: 12px;
+  padding: 16px;
+  border-radius: 16px;
 }
 
 .ds-card-header {
@@ -2192,15 +2193,22 @@
 /* Dashboard chart grid */
 .ds-dashboard-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: 20px;
-  margin-bottom: 20px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+  align-items: stretch;
+}
+
+.ds-dashboard-grid > .ds-card {
+  grid-column: span 6;
+  min-height: 100%;
 }
 
 .ds-dashboard-main-page {
-  height: calc(100vh - var(--ds-navbar-height) - 56px);
-  overflow: hidden;
-  padding-bottom: 0;
+  min-height: calc(100vh - var(--ds-navbar-height) - 56px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 24px;
 }
 
 .ds-dashboard-main-page .page-header {
@@ -2221,18 +2229,29 @@
   gap: 20px;
 }
 
+@media (max-width: 1280px) {
+  .ds-dashboard-grid > .ds-card {
+    grid-column: span 12;
+  }
+}
+
 @media (max-width: 1200px) {
   .ds-dashboard-grid,
   .ds-dashboard-grid-bottom {
     grid-template-columns: 1fr;
   }
+
+  .ds-dashboard-grid > .ds-card {
+    grid-column: auto;
+  }
 }
 
 .ds-chart-metric {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--ds-text-primary);
-  margin: 4px 0 16px;
+  font-size: 24px;
+  line-height: 1.1;
+  font-weight: 800;
+  color: var(--ds-auca-blue);
+  margin: 2px 0 10px;
 }
 
 .ds-chart-legend {

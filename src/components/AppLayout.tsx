@@ -219,7 +219,7 @@ function LayoutShell({ children }: { children: React.ReactNode }) {
         <SidebarProvider defaultOpen>
           <div className="ds-layout-body">
             <AppSidebar />
-            <main className="ds-main-content" style={{ marginLeft: "var(--sidebar-width, 16rem)" }}>
+            <main className="ds-main-content">
               {children}
             </main>
           </div>

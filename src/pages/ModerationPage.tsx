@@ -352,7 +352,7 @@ const ModerationPage = () => {
       <div className="space-y-6">
 
         {/* Statistics & Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
           {[
             { 
               label: "My Assignments", 
@@ -371,18 +371,18 @@ const ModerationPage = () => {
               bg: "bg-slate-100"
             },
           ].map((stat, i) => (
-            <Card key={i} className="group shadow-sm border-slate-200 transition-all duration-300 hover:shadow-md bg-white">
-              <CardContent className="p-3 text-left">
+            <Card key={i} className="group rounded-2xl border-slate-200/80 bg-white/95 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md">
+              <CardContent className="p-4 text-left">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-[9px] font-bold text-slate-400 uppercase tracking-[0.22em] group-hover:text-[#1d3557] transition-colors">{stat.label}</h3>
+                  <h3 className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 transition-colors group-hover:text-[#1d3557]">{stat.label}</h3>
                   <div className={`h-7 w-7 rounded-lg ${stat.bg} flex items-center justify-center ${stat.color}`}>
                     <stat.icon className="h-3.5 w-3.5" />
                   </div>
                 </div>
                 <div className="flex items-end gap-2 mb-1">
-                  <span className="text-xl font-bold text-slate-800">{stat.value}</span>
+                  <span className="text-2xl font-black text-slate-800">{stat.value}</span>
                 </div>
-                <p className="text-[10px] text-slate-400 font-medium">{stat.desc}</p>
+                <p className="text-[11px] text-slate-400 font-medium">{stat.desc}</p>
               </CardContent>
             </Card>
           ))}
@@ -395,7 +395,7 @@ const ModerationPage = () => {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-6 py-3 text-xs font-bold uppercase tracking-widest transition-all border-b-2 ${
+              className={`px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.22em] transition-all border-b-2 ${
                 activeTab === tab ? "border-[#1d3557] text-[#1d3557]" : "border-transparent text-slate-400 hover:text-slate-600"
               }`}
             >
@@ -409,8 +409,8 @@ const ModerationPage = () => {
           {filtered.map((item) => (
             <Card key={item.id} className={`group border-slate-200 overflow-hidden transition-all duration-300 hover:shadow-md ${expandedItem === item.id ? "ring-2 ring-[#1d3557] shadow-lg" : "hover:border-[#1d3557]/30"}`}>
               <CardContent className="p-0">
-                <div className="flex items-center gap-4 p-5">
-                  <div className={`h-12 w-12 rounded-xl flex items-center justify-center transition-colors ${expandedItem === item.id ? "bg-[#1d3557] text-white" : "bg-slate-100 text-[#1d3557]"}`}>
+                <div className="flex items-center gap-3 p-4">
+                  <div className={`h-11 w-11 rounded-xl flex items-center justify-center transition-colors ${expandedItem === item.id ? "bg-[#1d3557] text-white" : "bg-slate-100 text-[#1d3557]"}`}>
                     <FileText className="h-6 w-6" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -422,7 +422,7 @@ const ModerationPage = () => {
                         {item.plagiarismScore}% Similarity
                       </Badge>
                     </div>
-                    <h4 className="text-[15px] font-bold text-slate-800 group-hover:text-[#1d3557] transition-colors truncate">{item.title}</h4>
+                    <h4 className="text-[14px] font-semibold text-slate-800 transition-colors group-hover:text-[#1d3557] truncate">{item.title}</h4>
                     <div className="flex items-center gap-2 mt-1">
                       <p className="text-[11px] text-slate-500 font-medium">{item.author} · {item.department}</p>
                       <span className="text-slate-300">|</span>
@@ -446,10 +446,10 @@ const ModerationPage = () => {
                 </div>
 
                 {expandedItem === item.id && (
-                  <div className="border-t border-slate-100 bg-slate-50/50 p-8 space-y-8 animate-in slide-in-from-top-4 duration-500">
+                  <div className="border-t border-slate-100 bg-slate-50/50 p-5 space-y-6 animate-in slide-in-from-top-4 duration-500">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                       {/* Left: Supervision & Progress */}
-                      <div className="lg:col-span-1 space-y-6">
+                      <div className="lg:col-span-1 space-y-5">
                         <div className="space-y-3">
                           <p className="text-[10px] font-bold text-[#1d3557] uppercase tracking-[0.2em]">Archival Progress</p>
                           <div className="flex items-center gap-4">
@@ -471,7 +471,7 @@ const ModerationPage = () => {
                           </div>
                         </div>
 
-                        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                           <div className="flex items-center justify-between mb-4">
                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Departmental Log</p>
                             <History className="h-3.5 w-3.5 text-slate-300" />
@@ -494,8 +494,8 @@ const ModerationPage = () => {
                       </div>
 
                       {/* Right: Librarian Actions & New Feedback */}
-                      <div className="lg:col-span-2 space-y-6">
-                        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+                      <div className="lg:col-span-2 space-y-5">
+                        <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
                           <p className="text-[10px] font-bold text-[#1d3557] uppercase tracking-[0.2em] mb-4">Final Librarian Feedback</p>
                           <div className="space-y-4">
                             <Textarea 
@@ -546,7 +546,7 @@ const ModerationPage = () => {
                         </div>
 
                         {/* Quick Tips for Moderators */}
-                        <div className="bg-[#1d3557]/5 border border-[#1d3557]/10 rounded-2xl p-5 flex gap-4 items-start">
+                        <div className="bg-[#1d3557]/5 border border-[#1d3557]/10 rounded-2xl p-4 flex gap-3 items-start">
                           <div className="h-10 w-10 rounded-xl bg-[#1d3557] text-white flex items-center justify-center flex-shrink-0 shadow-md">
                             <Info className="h-5 w-5" />
                           </div>
