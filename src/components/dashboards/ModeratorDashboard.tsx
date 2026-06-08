@@ -55,10 +55,35 @@ export function ModeratorDashboard() {
   const [messageInput, setMessageInput] = useState("");
   const [allMessages, setAllMessages] = useState(communications);
 
-  const myAssignedCount = 12;
-  const pendingGlobal = 24;
-  const approvedCount = 42;
-  const rejectedCount = 8;
+  // Calculate real metrics from queue data
+  const pendingCount = queue.length;
+  const totalVerified = weeklyTrendData.reduce((sum, w) => sum + w.verified, 0);
+  const totalRejected = weeklyTrendData.reduce((sum, w) => sum + w.rejected, 0);
+  const avgConfidence = Math.round(queue.reduce((sum, q) => sum + q.confidence, 0) / queue.length);
+  
+  // Department breakdown
+  const deptBreakdown = queue.reduce((acc, item) => {
+    const existing = acc.find(d => d.name === item.dept);
+    if (existing) existing.value += 1;
+    else acc.push({ name: item.dept, value: 1 });
+    return acc;
+  }, [] as Array<{name: string; value: number}>);
+
+  // Type breakdown
+  const typeBreakdown = queue.reduce((acc, item) => {
+    const existing = acc.find(t => t.name === item.type);
+    if (existing) existing.value += 1;
+    else acc.push({ name: item.type, value: 1 });
+    return acc;
+  }, [] as Array<{name: string; value: number}>);
+
+  // Recent activity
+  const recentActivity = queue.slice(0, 3).map((q, i) => ({
+    id: q.id,
+    action: i === 0 ? "submitted" : i === 1 ? "awaiting review" : "high confidence",
+    item: q.title.substring(0, 35) + "...",
+    time: "just now"
+  }));
 
   const handleSendMessage = () => {
     if (!messageInput.trim()) return;
@@ -151,10 +176,10 @@ export function ModeratorDashboard() {
   return (
     <div className="space-y-4 pb-8">
       {/* ── Header Section ── */}
-      <div className="flex items-start justify-between pt-1">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-[#1a1d2e]">Moderation</h1>
-          <p className="text-sm text-[#8a8fa8] mt-1">Manage submissions and reviews</p>
+          <h1 className="text-2xl font-bold text-[#1a1d2e]">Moderation Hub</h1>
+          <p className="text-sm text-[#8a8fa8] mt-1">Review and manage {pendingCount} submissions</p>
         </div>
         <Button 
           onClick={() => navigate("/moderation")}
@@ -164,13 +189,13 @@ export function ModeratorDashboard() {
         </Button>
       </div>
 
-      {/* ── Metrics Grid (Compact 4-column) ── */}
+      {/* ── Metrics Grid (Real Data - 4-column) ── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: "Verified", value: approvedCount, icon: CheckCircle2, color: "#10b981", bg: "#ecfdf5" },
-          { label: "Pending", value: pendingGlobal, icon: Clock, color: "#3b82f6", bg: "#eff6ff" },
-          { label: "Rejected", value: rejectedCount, icon: XCircle, color: "#ef4444", bg: "#fef2f2" },
-          { label: "This Week", value: 33, icon: TrendingUp, color: "#8b5cf6", bg: "#faf5ff" },
+          { label: "Verified", value: totalVerified, icon: CheckCircle2, color: "#10b981", bg: "#ecfdf5" },
+          { label: "Pending", value: pendingCount, icon: Clock, color: "#3b82f6", bg: "#eff6ff" },
+          { label: "Rejected", value: totalRejected, icon: XCircle, color: "#ef4444", bg: "#fef2f2" },
+          { label: "Avg Quality", value: `${avgConfidence}%`, icon: TrendingUp, color: "#8b5cf6", bg: "#faf5ff" },
         ].map((metric, i) => (
           <div key={i} className="bg-white border border-[#e8eaf2] rounded-lg p-4 hover:border-[#003566]/20 transition-colors duration-200">
             <div className="flex items-center justify-between">
@@ -186,11 +211,11 @@ export function ModeratorDashboard() {
         ))}
       </div>
 
-      {/* ── Main Grid: Queue + Chart (2:1 ratio) ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {/* ── Main Grid: Queue + Side Panels ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
         
         {/* Left: Queue Table View */}
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2.5 space-y-4">
           {/* Queue Card */}
           <div className="bg-white border border-[#e8eaf2] rounded-lg overflow-hidden hover:border-[#003566]/10 transition-colors">
             <div className="flex items-center justify-between px-5 py-3 border-b border-[#e8eaf2] bg-[#f9fafb]">
@@ -292,15 +317,71 @@ export function ModeratorDashboard() {
           </div>
         </div>
 
-        {/* Right: Communication Panel */}
-        <div className="bg-white border border-[#e8eaf2] rounded-lg overflow-hidden flex flex-col hover:border-[#003566]/10 transition-colors">
-          <div className="flex items-center gap-2 px-5 py-3 border-b border-[#e8eaf2] bg-[#f9fafb]">
-            <MessageSquare className="h-4 w-4 text-[#003566]" />
-            <h3 className="text-sm font-semibold text-[#1a1d2e]">Activity</h3>
+        {/* Right Sidebar: 3 Panels */}
+        <div className="space-y-4">
+          {/* Quick Stats Panel */}
+          <div className="bg-white border border-[#e8eaf2] rounded-lg overflow-hidden hover:border-[#003566]/10 transition-colors">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-[#e8eaf2] bg-[#f9fafb]">
+              <BarChart2 className="h-4 w-4 text-[#003566]" />
+              <h3 className="text-sm font-semibold text-[#1a1d2e]">Breakdown</h3>
+            </div>
+            <div className="p-4 space-y-3">
+              <div>
+                <p className="text-xs font-medium text-[#8a8fa8] mb-2">By Type</p>
+                <div className="space-y-1.5">
+                  {typeBreakdown.map(item => (
+                    <div key={item.name} className="flex items-center justify-between text-xs">
+                      <span className="text-[#1a1d2e]">{item.name}</span>
+                      <span className="font-semibold text-[#003566]">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="border-t border-[#e8eaf2] pt-3">
+                <p className="text-xs font-medium text-[#8a8fa8] mb-2">By Department</p>
+                <div className="space-y-1.5">
+                  {deptBreakdown.map(item => (
+                    <div key={item.name} className="flex items-center justify-between text-xs">
+                      <span className="text-[#1a1d2e]">{item.name}</span>
+                      <span className="font-semibold text-[#003566]">{item.value}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-          
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-3 space-y-2.5 max-h-80">
+
+          {/* Recent Activity Panel */}
+          <div className="bg-white border border-[#e8eaf2] rounded-lg overflow-hidden hover:border-[#003566]/10 transition-colors">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-[#e8eaf2] bg-[#f9fafb]">
+              <Activity className="h-4 w-4 text-[#003566]" />
+              <h3 className="text-sm font-semibold text-[#1a1d2e]">Recent Activity</h3>
+            </div>
+            <div className="divide-y divide-[#e8eaf2]">
+              {recentActivity.map(activity => (
+                <div key={activity.id} className="px-4 py-3 hover:bg-[#f9fafb] transition-colors">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-[#1a1d2e] truncate">{activity.item}</p>
+                      <p className="text-xs text-[#8a8fa8] mt-0.5">{activity.action}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-[#8a8fa8] mt-1">{activity.time}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Communication Panel */}
+          {/* Communication Panel */}
+          <div className="bg-white border border-[#e8eaf2] rounded-lg overflow-hidden flex flex-col hover:border-[#003566]/10 transition-colors">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-[#e8eaf2] bg-[#f9fafb]">
+            <MessageSquare className="h-4 w-4 text-[#003566]" />
+              <h3 className="text-sm font-semibold text-[#1a1d2e]">Messages</h3>
+            </div>
+            
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-3 space-y-2.5 max-h-60">
             {allMessages.slice(-5).reverse().map((msg) => (
               <div key={msg.id} className={`flex gap-2.5 ${msg.type === "user" ? "flex-row-reverse" : ""}`}>
                 <div className={`h-7 w-7 rounded-full flex items-center justify-center text-[8px] font-bold flex-shrink-0 text-white ${
@@ -319,32 +400,27 @@ export function ModeratorDashboard() {
                   <span className="text-[10px] text-[#8a8fa8] mt-0.5 block">{msg.time}</span>
                 </div>
               </div>
-            ))}
-          </div>
-          
-          {/* Input */}
-          <div className="border-t border-[#e8eaf2] p-3 space-y-2">
-            <div className="flex gap-2">
-              <Input 
-                placeholder="Message..."
-                value={messageInput}
-                onChange={(e) => setMessageInput(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                className="bg-[#f9fafb] border-[#e8eaf2] text-xs text-[#1a1d2e] placeholder:text-[#8a8fa8] rounded-lg h-8"
-              />
-              <Button
-                onClick={handleSendMessage}
-                className="h-8 w-8 p-0 bg-[#003566] hover:bg-[#003566]/90 text-white rounded-lg"
-              >
-                <Send className="h-3.5 w-3.5" />
-              </Button>
+              ))}
             </div>
-            <Button 
-              size="sm"
-              className="w-full text-xs font-medium bg-[#003566] hover:bg-[#003566]/90 text-white h-8 rounded-lg"
-            >
-              <Award className="h-3 w-3" /> Assign
-            </Button>
+            
+            {/* Input */}
+            <div className="border-t border-[#e8eaf2] p-3 space-y-2">
+              <div className="flex gap-2">
+                <Input 
+                  placeholder="Message..."
+                  value={messageInput}
+                  onChange={(e) => setMessageInput(e.target.value)}
+                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+                  className="bg-[#f9fafb] border-[#e8eaf2] text-xs text-[#1a1d2e] placeholder:text-[#8a8fa8] rounded-lg h-8"
+                />
+                <Button
+                  onClick={handleSendMessage}
+                  className="h-8 w-8 p-0 bg-[#003566] hover:bg-[#003566]/90 text-white rounded-lg"
+                >
+                  <Send className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
