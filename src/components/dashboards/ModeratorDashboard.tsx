@@ -37,6 +37,19 @@ const CHART_SECONDARY = "#D0D4F7";
 const CHART_GRID = "#E8EAF2";
 const CHART_AXIS = "#8A8FA8";
 
+const getDecisionStyles = (type: string) => {
+  switch (type) {
+    case "success":
+      return { bg: "#dcfce7", text: "#166534", border: "#86efac" };
+    case "error":
+      return { bg: "#fee2e2", text: "#991b1b", border: "#fca5a5" };
+    case "warning":
+      return { bg: "#fef3c7", text: "#92400e", border: "#fde047" };
+    default:
+      return { bg: "#f3f4f6", text: "#374151", border: "#d1d5db" };
+  }
+};
+
 export function ModeratorDashboard() {
   const reportRef = useRef<HTMLDivElement | null>(null);
   const verified = 42;
@@ -157,6 +170,87 @@ export function ModeratorDashboard() {
         </DataCard>
       </div>
 
+      {/* ─── Recent Decisions Section ─── */}
+      <div style={{ marginTop: "2rem" }}>
+        <DataCard label="Recent Decisions" className="ds-card-full-width">
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            {recentDecisions.map((item, idx) => {
+              const IconComponent = item.icon;
+              const styles = getDecisionStyles(item.type);
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    display: "flex",
+                    alignItems: "flex-start",
+                    gap: "12px",
+                    padding: "12px",
+                    borderRadius: "8px",
+                    backgroundColor: styles.bg,
+                    borderLeft: `3px solid ${styles.border}`,
+                  }}
+                >
+                  <IconComponent
+                    style={{
+                      width: "20px",
+                      height: "20px",
+                      marginTop: "2px",
+                      flexShrink: 0,
+                      color: styles.text,
+                    }}
+                  />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p
+                      style={{
+                        margin: "0 0 4px 0",
+                        fontWeight: "600",
+                        fontSize: "14px",
+                        color: styles.text,
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      {item.title}
+                    </p>
+                    <p
+                      style={{
+                        margin: "0 0 4px 0",
+                        fontSize: "13px",
+                        color: styles.text,
+                        opacity: 0.8,
+                      }}
+                    >
+                      By <strong>{item.author}</strong> • {item.date}
+                    </p>
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: "13px",
+                        color: styles.text,
+                      }}
+                    >
+                      {item.reason}
+                    </p>
+                  </div>
+                  <span
+                    style={{
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                      fontSize: "12px",
+                      fontWeight: "600",
+                      backgroundColor: styles.border,
+                      color: styles.text,
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {item.decision}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </DataCard>
+      </div>
     </div>
   );
 }
