@@ -1425,7 +1425,7 @@
 }
 
 .ds-student-welcome-badge {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   padding: 8px 12px;
   border-radius: 999px;
@@ -1435,6 +1435,8 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--ds-auca-blue);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .ds-student-welcome-panel {
