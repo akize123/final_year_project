@@ -89,7 +89,7 @@ export const StudentDashboard = () => {
           <p className="ds-kpi-trend up" style={{ marginBottom: 12 }}>
             + 12% vs last month
           </p>
-          <ResponsiveContainer width="100%" height={220}>
+          <ResponsiveContainer width="100%" height={180}>
             <BarChart data={documentUploadsByWeek} barGap={4}>
               <CartesianGrid stroke={CHART_GRID} vertical={false} />
               <XAxis dataKey="week" tick={{ fontSize: 11, fill: CHART_AXIS }} axisLine={{ stroke: CHART_GRID }} />
@@ -114,7 +114,7 @@ export const StudentDashboard = () => {
         <DataCard label="Document Status" className="ds-card-compact">
           <p className="ds-kpi-label" style={{ margin: 0 }}>Completion rate</p>
           <p className="ds-chart-metric">{academicRate}%</p>
-          <ResponsiveContainer width="100%" height={200}>
+          <ResponsiveContainer width="100%" height={160}>
             <PieChart>
               <Pie
                 data={documentStatusDonut}
@@ -142,11 +142,6 @@ export const StudentDashboard = () => {
             ))}
           </div>
         </DataCard>
-      </div>
-      <div className="ds-dashboard-actions">
-        <button type="button" className="btn btn-primary btn-sm" onClick={() => navigate("/student/dashboard-more")}>
-          View More
-        </button>
       </div>
     </div>
   );

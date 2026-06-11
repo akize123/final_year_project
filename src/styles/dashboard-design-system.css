@@ -74,16 +74,16 @@
 
 .ds-student-layout .ds-top-navbar-student {
   left: var(--ds-sidebar-width);
-  background: #f8fafc;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.7);
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.02), 0 4px 12px 0 rgba(0, 0, 0, 0.01);
 }
 
 .ds-student-layout .ds-main-content {
-
-  padding: 20px 22px 18px 0;
+  margin-top: var(--ds-navbar-height);
+  padding: 20px 22px 18px 20px;
 }
 
 .ds-student-docs-subnav {
@@ -561,7 +561,7 @@
 }
 
 .ds-student-layout .ds-main-content {
-  overflow-y: hidden;
+  overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
@@ -1396,21 +1396,31 @@
 .ds-student-welcome {
   position: relative;
   overflow: hidden;
-  margin-bottom: 16px;
-  padding: 14px 16px;
-  border-radius: 18px;
-  border: 1px solid rgba(0, 53, 102, 0.10);
-  background: linear-gradient(135deg, #ffffff 0%, #f5f8ff 100%);
-  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(235, 243, 255, 0.8) 100%);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 30px -10px rgba(0, 53, 102, 0.15), 
+              0 1px 3px rgba(0, 0, 0, 0.05),
+              inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ds-student-welcome:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 35px -8px rgba(0, 53, 102, 0.2), 
+              0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .ds-student-welcome::before {
   content: "";
   position: absolute;
   inset: 0 auto 0 0;
-  width: 4px;
-  background: linear-gradient(180deg, #003566 0%, #0066cc 100%);
-  border-radius: 14px 0 0 14px;
+  width: 6px;
+  background: linear-gradient(180deg, #0056b3 0%, #00b4d8 100%);
+  border-radius: 16px 0 0 16px;
 }
 
 .ds-student-welcome-inner {
@@ -1420,53 +1430,69 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding-left: 6px;
+  gap: 16px;
 }
 
 .ds-student-welcome-badge {
   display: inline-flex;
   align-items: center;
-  padding: 8px 12px;
+  padding: 6px 14px;
   border-radius: 999px;
-  background: rgba(0, 53, 102, 0.07);
+  background: linear-gradient(135deg, #003566 0%, #0056b3 100%);
   font-size: 11px;
   font-weight: 800;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ds-auca-blue);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 53, 102, 0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.ds-student-welcome-badge:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(0, 53, 102, 0.3);
 }
 
 .ds-student-welcome-panel {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-left: auto;
+  gap: 12px;
+  align-items: center;
 }
 
 .ds-student-welcome-chip {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
-  padding: 8px 12px;
-  border-radius: 12px;
+  padding: 8px 16px;
+  border-radius: 14px;
   border: 1px solid rgba(0, 53, 102, 0.08);
   background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 6px -1px rgba(0, 53, 102, 0.05);
+  transition: all 0.2s ease;
+}
+
+.ds-student-welcome-chip:hover {
+  background: #ffffff;
+  border-color: rgba(0, 102, 204, 0.2);
+  box-shadow: 0 6px 12px -2px rgba(0, 53, 102, 0.08);
+  transform: translateY(-1px);
 }
 
 .ds-student-welcome-chip-label {
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: rgba(0, 53, 102, 0.52);
+  color: #556080;
 }
 
 .ds-student-welcome-chip-value {
   font-size: 16px;
   font-weight: 800;
-  color: var(--ds-auca-blue);
+  color: #0056b3;
 }
 
 /* Cards */
@@ -2217,6 +2243,18 @@
 
 .ds-dashboard-main-page .ds-dashboard-grid {
   grid-template-rows: minmax(0, 1fr);
+}
+
+.ds-student-layout .ds-dashboard-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  gap: 16px;
+}
+
+.ds-student-layout .ds-dashboard-grid > .ds-card {
+  flex: 1 1 50% !important;
+  min-width: 0;
 }
 
 .ds-dashboard-main-page .ds-card {
