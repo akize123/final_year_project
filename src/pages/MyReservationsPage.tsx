@@ -44,9 +44,8 @@ const MyReservationsPage = () => {
   const allReservations = [...localReservations, ...mockReservations];
 
   const tabs = [
-    { id: "active", label: "Active", count: allReservations.filter(r => r.status === "active").length },
-    { id: "upcoming", label: "Upcoming", count: allReservations.filter(r => r.status === "upcoming").length },
-    { id: "completed", label: "Completed", count: allReservations.filter(r => r.status === "completed").length },
+    { id: "active", label: "Active Now", count: allReservations.filter(r => r.status === "active").length },
+    { id: "waitlisted", label: "Waitlisted", count: allReservations.filter(r => r.status === "waitlisted").length },
   ];
 
   const filtered = allReservations.filter((r) => {
@@ -68,15 +67,6 @@ const MyReservationsPage = () => {
     const endDateTime = new Date(startDateTime.getTime() + 30 * 60000); // Add 30 minutes
     const calculatedEndTime = endDateTime.toTimeString().slice(0, 5); // Format HH:mm
     
-    // Determine status based on selected start time (auto-approve without moderator)
-    const startDateTimeObj = startDateTime.getTime();
-    const endDateTimeObj = endDateTime.getTime();
-    const nowTs = Date.now();
-
-    const initialStatus = nowTs >= startDateTimeObj && nowTs <= endDateTimeObj
-      ? "active"
-      : (nowTs < startDateTimeObj ? "upcoming" : "completed");
-
     const newRes = {
       id: `r-${Date.now()}`,
       userId: "u1",
@@ -84,7 +74,7 @@ const MyReservationsPage = () => {
       projectTitle: book?.title || "Unknown Book",
       slotStart: `${resDate}T${startTime}:00`,
       slotEnd: `${resDate}T${calculatedEndTime}:00`,
-      status: initialStatus, // Auto-approved: active/upcoming/completed
+      status: "waitlisted", // Sent to moderator
       requesterName,
       requesterEmail,
       purpose,
@@ -122,13 +112,34 @@ const MyReservationsPage = () => {
     active: "Nothing is checked out right now.",
     completed: "No completed reservations yet.",
     waitlisted: "You are not on a waitlist.",
+    setActiveTab("waitlisted");
+  };
 
+  const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
+  const formatTime = (d: string) => new Date(d).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
+
+  const emptyMessage: Record<string, string> = {
+    upcoming: "You have no upcoming reservations.",
+    active: "Nothing is checked out right now.",
+    completed: "No completed reservations yet.",
+    waitlisted: "You are not on a waitlist.",
   };
 
   return (
     <AppLayout>
-      <div className="space-y-6">
-
+      <div className="ds-page-scroll max-w-4xl mx-auto w-full">
+        
+        {/* Header Section */}
+        <section className="ds-student-welcome">
+          <div className="ds-student-welcome-inner">
+            <div className="flex flex-col items-start gap-1">
+              <span className="ds-student-welcome-badge">My Reservation</span>
+              <h1 className="text-[18px] font-black text-[#1d3557] leading-tight tracking-tight mt-1">
+                Manage Your Reservation
+              </h1>
+            </div>
+            
+            <div className="ds-student-welcome-panel">
               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-[#003566] hover:bg-[#0056b3] text-[11px] font-bold shadow-md px-5 rounded-full h-9 uppercase tracking-widest text-white border-none">
@@ -233,6 +244,9 @@ const MyReservationsPage = () => {
                   </form>
                 </DialogContent>
               </Dialog>
+            </div>
+          </div>
+        </section>
 
         {/* Centered Tabs */}
         <div className="flex justify-center gap-2 flex-wrap mb-4">
@@ -267,22 +281,18 @@ const MyReservationsPage = () => {
           </div>
         ) : (
           <div className="space-y-3">
-            {filtered.map((r) => {
-              const nowTs = Date.now();
-              const startTs = new Date(r.slotStart).getTime();
-              const endTs = new Date(r.slotEnd).getTime();
-              const dynamicStatus = nowTs > endTs ? "completed" : (nowTs >= startTs && nowTs <= endTs ? "active" : "upcoming");
-              const canOpen = nowTs >= startTs && nowTs <= endTs;
-              return (
-              <div key={r.id} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-md hover:shadow-lg transition-all duration-300">
+            {filtered.map((r) => (
+              <div key={r.id} className="group flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md hover:border-[#1d3557]/20 transition-all duration-300">
                 <div className="space-y-1.5 flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Badge variant="outline" className={`text-[10px] font-bold uppercase tracking-widest border-transparent px-2 py-0.5 ${statusColors[dynamicStatus] || "bg-blue-50 text-[#1d3557]"}`}>
-                      {dynamicStatus}
-                    </Badge>
-                  </div>
+                  {r.status !== "active" && (
+                    <div className="flex items-center gap-2 mb-1">
+                      <Badge variant="outline" className={`text-[9px] font-bold uppercase tracking-widest border-transparent px-2 py-0.5 ${statusColors[r.status] || "bg-blue-50 text-[#1d3557]"}`}>
+                        {r.status}
+                      </Badge>
+                    </div>
+                  )}
                   <h3 className="text-[14px] font-bold text-slate-800 leading-tight group-hover:text-[#1d3557] transition-colors truncate">{r.projectTitle}</h3>
-                  <div className="flex items-center gap-4 text-[12px] font-semibold text-slate-500 tracking-wide flex-wrap mt-1">
+                  <div className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider flex-wrap">
                     <span className="flex items-center gap-1.5">
                       <CalendarDays className="h-3 w-3 text-slate-300 group-hover:text-[#1d3557] transition-colors" />
                       {formatDate(r.slotStart)}
@@ -293,7 +303,7 @@ const MyReservationsPage = () => {
                     </span>
                   </div>
                   {(r.requesterName || r.purpose || r.materialType) && (
-                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[12px] font-medium text-slate-600">
+                    <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-semibold text-slate-500">
                       {r.requesterName && (
                         <span className="flex items-center gap-1.5">
                           <UserRound className="h-3 w-3" />
@@ -313,46 +323,39 @@ const MyReservationsPage = () => {
                   )}
                 </div>
                 
-                <div className="flex-shrink-0 flex items-center gap-2">
-                  {canOpen ? (
+                <div className="flex-shrink-0 flex gap-2">
+                  {r.status === "active" && (
                     <Button 
-                      size="sm"
+                      size="sm" 
                       onClick={() => navigate(`/project/${r.projectId}`)}
-                      className="h-9 rounded-xl bg-[#0b6e99] hover:bg-[#095a80] text-white font-bold px-5 shadow-sm uppercase tracking-widest text-[11px]"
+                      className="h-9 rounded-xl bg-[#1d3557] hover:bg-[#2c4e7d] font-bold px-6 shadow-sm uppercase tracking-widest text-[10px]"
                     >
-                      <Eye className="w-4 h-4 mr-2" />
+                      <Eye className="w-3.5 h-3.5 mr-2" />
                       Open viewer
                     </Button>
-                  ) : (
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-9 rounded-xl text-slate-600 border-slate-200 px-5 text-[11px]"
-                        onClick={() => toast({ title: "Not Yet", description: "You can open the viewer only during the reserved time." })}
-                      >
-                        <Eye className="w-4 h-4 mr-2" />
-                        View (time-restricted)
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="text-red-600 hover:text-red-700 hover:bg-red-50 font-bold rounded-xl px-4 h-9 text-[11px]"
-                        onClick={() => {
-                          const updated = localReservations.filter(rr => rr.id !== r.id);
-                          setLocalReservations(updated);
-                          localStorage.setItem("auca_reservations", JSON.stringify(updated));
-                          toast({ title: "Reservation Cancelled", description: `Cancelled reservation for '${r.projectTitle}'` });
-                        }}
-                      >
-                        <X className="w-4 h-4 mr-1" />
-                        Cancel
-                      </Button>
-                    </div>
+                  )}
+                  {r.status === "waitlisted" && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 font-bold rounded-xl px-5 h-9 text-[10px] uppercase tracking-widest"
+                      disabled
+                    >
+                      Pending Approval
+                    </Button>
+                  )}
+                  {r.status === "upcoming" && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 font-bold rounded-xl px-5 h-9 text-[10px] uppercase tracking-widest"
+                      onClick={() => toast({ title: "Reservation Cancelled", description: `Cancelled reservation for '${r.projectTitle}'` })}
+                    >
+                      <X className="w-3.5 h-3.5 mr-2" />
+                      Cancel
+                    </Button>
                   )}
                 </div>
-              </div>
-            )})}
               </div>
             ))}
           </div>
