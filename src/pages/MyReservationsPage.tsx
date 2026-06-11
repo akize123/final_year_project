@@ -112,34 +112,12 @@ const MyReservationsPage = () => {
     active: "Nothing is checked out right now.",
     completed: "No completed reservations yet.",
     waitlisted: "You are not on a waitlist.",
-    setActiveTab("waitlisted");
-  };
 
-  const formatDate = (d: string) => new Date(d).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric" });
-  const formatTime = (d: string) => new Date(d).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
-
-  const emptyMessage: Record<string, string> = {
-    upcoming: "You have no upcoming reservations.",
-    active: "Nothing is checked out right now.",
-    completed: "No completed reservations yet.",
-    waitlisted: "You are not on a waitlist.",
   };
 
   return (
     <AppLayout>
-      <div className="ds-page-scroll max-w-4xl mx-auto w-full">
-        
-        {/* Header Section */}
-        <section className="ds-student-welcome">
-          <div className="ds-student-welcome-inner">
-            <div className="flex flex-col items-start gap-1">
-              <span className="ds-student-welcome-badge">My Reservation</span>
-              <h1 className="text-[18px] font-black text-[#1d3557] leading-tight tracking-tight mt-1">
-                Manage Your Reservation
-              </h1>
-            </div>
-            
-            <div className="ds-student-welcome-panel">
+      
               <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-[#003566] hover:bg-[#0056b3] text-[11px] font-bold shadow-md px-5 rounded-full h-9 uppercase tracking-widest text-white border-none">
@@ -244,9 +222,6 @@ const MyReservationsPage = () => {
                   </form>
                 </DialogContent>
               </Dialog>
-            </div>
-          </div>
-        </section>
 
         {/* Centered Tabs */}
         <div className="flex justify-center gap-2 flex-wrap mb-4">
